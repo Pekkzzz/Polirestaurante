@@ -1,48 +1,67 @@
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using Polirestaurante.Repository;
 
-var builder = WebApplication.CreateSlimBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.ConfigureHttpJsonOptions(options =>
-{
-    options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
-});
+// Add services to the container.
+var dbConnectionString = builder.Configuration.GetConnectionString("DefaultConnection"); //name of database connection
+//builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(dbConnectionString)); //connection to database
 
+//Repositories
+builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+//Services
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRoleService, UserRoleService>();
+
+builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
     app.MapOpenApi();
 }
 
-Todo[] sampleTodos =
-[
-    new(1, "Walk the dog"),
-    new(2, "Do the dishes", DateOnly.FromDateTime(DateTime.Now)),
-    new(3, "Do the laundry", DateOnly.FromDateTime(DateTime.Now.AddDays(1))),
-    new(4, "Clean the bathroom"),
-    new(5, "Clean the car", DateOnly.FromDateTime(DateTime.Now.AddDays(2)))
-];
+app.UseHttpsRedirection();
 
-var todosApi = app.MapGroup("/todos");
-todosApi.MapGet("/", () => sampleTodos)
-        .WithName("GetTodos");
+app.UseAuthorization();
 
-todosApi.MapGet("/{id}", Results<Ok<Todo>, NotFound> (int id) =>
-    sampleTodos.FirstOrDefault(a => a.Id == id) is { } todo
-        ? TypedResults.Ok(todo)
-        : TypedResults.NotFound())
-    .WithName("GetTodoById");
+app.MapControllers();
 
 app.Run();
 
-public record Todo(int Id, string? Title, DateOnly? DueBy = null, bool IsComplete = false);
+//----------To start api----------
+//to this steps, first complete the database start up and step by step new install
+//------previus installations------
+//  dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+//  dotnet add package Microsoft.EntityFrameworkCore.Tools
+//  dotnet add package Microsoft.EntityFrameworkCore.Design
+//---------------------------------
+// 1. set up the database with "docker-compose up-d" or another already created database
+// 2. set up the api with command "dotnet run"
+// 3. To see the HTTP requests in Swagger, go to the link when the dotner run command is executed on localhost or any ip and
+//      after that, in the final of the ip put "swagger" example = http://localhost:5112/swagger
 
-[JsonSerializable(typeof(Todo[]))]
-internal partial class AppJsonSerializerContext : JsonSerializerContext
-{
+//----------set up database docker----------
+//  docker-compose up -d 
 
-}
+//----------step by step new install .NET API----------
+//  docker-compose up -d
+//  dotnet add package Microsoft.EntityFrameworkCore.Design
+//---For database migrations---
+//initial migration
+//  dotnet ef migrations add InitialMigration
+//make migration 
+//  dotnet ef database update
+
+//----------generate models from database to code----------
+// dotnet ef dbcontext scaffold "Server=localhost;Database=PoliRestaurante;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models/Entity --context-dir Data --context ApplicationDbContext --force
