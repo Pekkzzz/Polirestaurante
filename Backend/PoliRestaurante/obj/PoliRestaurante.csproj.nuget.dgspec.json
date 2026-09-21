@@ -1,31 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "G:\\Proyects\\University\\DesarrolloWeb\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj": {}
+    "C:\\Users\\C N T\\Documents\\GitHub\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj": {}
   },
   "projects": {
-    "G:\\Proyects\\University\\DesarrolloWeb\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj": {
+    "C:\\Users\\C N T\\Documents\\GitHub\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\Proyects\\University\\DesarrolloWeb\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj",
+        "projectUniqueName": "C:\\Users\\C N T\\Documents\\GitHub\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj",
         "projectName": "PoliRestaurante",
-        "projectPath": "G:\\Proyects\\University\\DesarrolloWeb\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj",
-        "packagesPath": "C:\\Users\\evanr\\.nuget\\packages\\",
-        "outputPath": "G:\\Proyects\\University\\DesarrolloWeb\\Polirestaurante\\Backend\\PoliRestaurante\\obj\\",
+        "projectPath": "C:\\Users\\C N T\\Documents\\GitHub\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj",
+        "packagesPath": "C:\\Users\\C N T\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\C N T\\Documents\\GitHub\\Polirestaurante\\Backend\\PoliRestaurante\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\evanr\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\C N T\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -45,7 +39,7 @@
           "auditLevel": "low",
           "auditMode": "all"
         },
-        "SdkAnalysisLevel": "10.0.300"
+        "SdkAnalysisLevel": "10.0.400"
       },
       "frameworks": {
         "net10.0": {
@@ -60,17 +54,17 @@
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[10.0.11, )"
+              "version": "[10.0.12, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[10.0.11, )"
+              "version": "[10.0.12, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[10.0.11, )"
+              "version": "[10.0.12, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -96,7 +90,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.302/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.401/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
