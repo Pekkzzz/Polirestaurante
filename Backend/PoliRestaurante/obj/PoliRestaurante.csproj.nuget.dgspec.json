@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\evanr\\OneDrive\\Escritorio\\Proyects\\University\\Desarrollo Web\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj": {}
+    "C:\\Users\\DELL\\OneDrive\\Escritorio\\VS Code Workspace\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj": {}
   },
   "projects": {
-    "C:\\Users\\evanr\\OneDrive\\Escritorio\\Proyects\\University\\Desarrollo Web\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj": {
+    "C:\\Users\\DELL\\OneDrive\\Escritorio\\VS Code Workspace\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\evanr\\OneDrive\\Escritorio\\Proyects\\University\\Desarrollo Web\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj",
+        "projectUniqueName": "C:\\Users\\DELL\\OneDrive\\Escritorio\\VS Code Workspace\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj",
         "projectName": "PoliRestaurante",
-        "projectPath": "C:\\Users\\evanr\\OneDrive\\Escritorio\\Proyects\\University\\Desarrollo Web\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj",
-        "packagesPath": "C:\\Users\\evanr\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\evanr\\OneDrive\\Escritorio\\Proyects\\University\\Desarrollo Web\\Polirestaurante\\Backend\\PoliRestaurante\\obj\\",
+        "projectPath": "C:\\Users\\DELL\\OneDrive\\Escritorio\\VS Code Workspace\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj",
+        "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\DELL\\OneDrive\\Escritorio\\VS Code Workspace\\Polirestaurante\\Backend\\PoliRestaurante\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\evanr\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -39,7 +39,7 @@
           "auditLevel": "low",
           "auditMode": "all"
         },
-        "SdkAnalysisLevel": "10.0.300"
+        "SdkAnalysisLevel": "10.0.400"
       },
       "frameworks": {
         "net10.0": {
@@ -90,7 +90,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.303/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.401/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
