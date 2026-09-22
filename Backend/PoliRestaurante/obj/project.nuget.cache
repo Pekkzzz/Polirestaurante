@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "t+sG7ygTAZQ=",
+  "dgSpecHash": "wNFiof7pB+0=",
   "success": true,
-  "projectFilePath": "G:\\Proyects\\University\\DesarrolloWeb\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj",
+  "projectFilePath": "C:\\Users\\evanr\\OneDrive\\Escritorio\\Proyects\\University\\Desarrollo Web\\Polirestaurante\\Backend\\PoliRestaurante\\PoliRestaurante.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\evanr\\.nuget\\packages\\azure.core\\1.50.0\\azure.core.1.50.0.nupkg.sha512",
     "C:\\Users\\evanr\\.nuget\\packages\\azure.identity\\1.17.1\\azure.identity.1.17.1.nupkg.sha512",
