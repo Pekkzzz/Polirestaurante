@@ -16,6 +16,7 @@ builder.Services.AddScoped<IReservationStatusRepository, ReservationStatusReposi
 //Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRoleService, UserRoleService>();
+builder.Services.AddScoped<IReservationStatusService, ReservationStatusService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

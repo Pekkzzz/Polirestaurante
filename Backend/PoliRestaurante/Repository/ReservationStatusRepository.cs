@@ -5,11 +5,16 @@ namespace Polirestaurante.Repository;
 
 public class ReservationStatusRepository : IReservationStatusRepository
 {
-  private readonly string _connectionString;
+    private readonly string _connectionString;
+
+    public ReservationStatusRepository(IConfiguration configuration)
+    {
+        _connectionString = configuration.GetConnectionString("DefaultConnection");
+    }
 
 
-public bool CreateReservationStatus(ReservationStatus reservationStatus)
-  {
+    public bool CreateReservationStatus(ReservationStatus reservationStatus)
+    {
     using SqlConnection connection = new SqlConnection(_connectionString);
 
     connection.Open();
@@ -20,14 +25,14 @@ public bool CreateReservationStatus(ReservationStatus reservationStatus)
         """;
 
     using SqlCommand command = new SqlCommand(query, connection);
-    
+
     command.Parameters.AddWithValue("@Name", reservationStatus.Name);
     command.Parameters.AddWithValue("@Description", reservationStatus.Description);
 
     int rowsAffected = command.ExecuteNonQuery();
 
     return rowsAffected > 0;
-  }
+    }
 
 public ReservationStatus? GetReservationStatus(int id)
 {
