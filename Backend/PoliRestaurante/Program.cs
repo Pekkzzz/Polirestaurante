@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Polirestaurante.Repository;
+using Polirestaurante.Tests;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,7 +42,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+//Testing
+RepositoryTestRunner.Run();
+// close testing
+
 app.Run();
+
+
 
 //----------To start api----------
 //to this steps, first complete the database start up and step by step new install
