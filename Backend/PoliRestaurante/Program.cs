@@ -11,6 +11,7 @@ var dbConnectionString = builder.Configuration.GetConnectionString("DefaultConne
 builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IReservationStatusRepository, ReservationStatusRepository>();
+builder.Services.AddScoped<ITableRepository, TableRepository>();
 
 
 //Services
