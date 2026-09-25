@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PoliRestaurante")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0fcee62229f88ebe3cd0794911637998f0143e9d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b148cf55a53f97c51ba43a3d139863346ea9e9d4")]
 [assembly: System.Reflection.AssemblyProductAttribute("PoliRestaurante")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PoliRestaurante")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
