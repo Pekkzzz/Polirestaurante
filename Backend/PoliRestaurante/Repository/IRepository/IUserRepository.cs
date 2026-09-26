@@ -1,4 +1,4 @@
-using PoliRestaurante.Models;
+using PoliRestaurante.Models.Entity;
 
 public interface IUserRepository
 {

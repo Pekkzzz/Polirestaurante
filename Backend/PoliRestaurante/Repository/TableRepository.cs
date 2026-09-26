@@ -1,5 +1,6 @@
 using Microsoft.Data.SqlClient;
 using PoliRestaurante.Models;
+using PoliRestaurante.Models.Entity;
 
 namespace Polirestaurante.Repository;
 

@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Polirestaurante.Repository;
 using Polirestaurante.Tests;
+using PoliRestaurante.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var dbConnectionString = builder.Configuration.GetConnectionString("DefaultConnection"); //name of database connection
-//builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(dbConnectionString)); //connection to database
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(dbConnectionString)); //connection to database
 
 //Repositories
 builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();

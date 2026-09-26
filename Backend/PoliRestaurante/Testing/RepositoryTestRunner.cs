@@ -1,6 +1,9 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Polirestaurante.Repository;
+using PoliRestaurante.Data;
 using PoliRestaurante.Models;
+using PoliRestaurante.Models.Entity;
 
 namespace Polirestaurante.Tests;
 
@@ -16,9 +19,21 @@ public class RepositoryTestRunner
             //User Role Repo Testing
             UserRoleRepositoryTest(configuration);
             //User Repo Testing
-            UserRepositoryTest(configuration);
+            ApplicationDbContext db = CreateDbContext(configuration);
+            UserRepositoryTest(db);
 
         
+    }
+
+    public static ApplicationDbContext CreateDbContext(IConfiguration configuration)
+    {
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseSqlServer(
+                configuration.GetConnectionString("DefaultConnection")
+            )
+            .Options;
+
+        return new ApplicationDbContext(options);
     }
 
     public static void UserRoleRepositoryTest(IConfiguration configuration)
@@ -72,9 +87,9 @@ public class RepositoryTestRunner
         
     }
 
-    public static void UserRepositoryTest(IConfiguration configuration)
+    public static void UserRepositoryTest(ApplicationDbContext db)
     {
-        UserRepository repository = new UserRepository(configuration);
+        UserRepository repository = new UserRepository(db);
 
         Console.WriteLine("===== PRUEBA USER REPOSITORY =====");
 

@@ -1,5 +1,6 @@
 using PoliRestaurante;
 using PoliRestaurante.Models;
+using PoliRestaurante.Models.Entity;
 
 public static class UsersMapper
 {
@@ -40,6 +41,7 @@ public static class UsersMapper
             UserRoleId = updateDto.UserRoleId
         };
     }
+    
 
     public static UserRole_Dto UserRoleToDto(UserRole userRole)
     {

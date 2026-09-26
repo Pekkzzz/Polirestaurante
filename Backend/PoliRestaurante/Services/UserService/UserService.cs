@@ -1,5 +1,5 @@
 using PoliRestaurante.Models;
-
+using PoliRestaurante.Models.Entity;
 public class UserService : IUserService
 {   
     //Repositories
