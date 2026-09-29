@@ -22,6 +22,9 @@ public class RepositoryTestRunner
             ApplicationDbContext db = CreateDbContext(configuration);
             UserRepositoryTest(db);
 
+            //Reservation Status Repo Testing
+            ReservationStatusRepositoryTest(db);
+
         
     }
 
@@ -135,4 +138,49 @@ public class RepositoryTestRunner
 
         
     }
+
+    public static void ReservationStatusRepositoryTest(ApplicationDbContext db)
+    {
+        ReservationStatusRepository repository = new ReservationStatusRepository(db);
+
+        Console.WriteLine("===== PRUEBA RESERVATION STATUS REPOSITORY =====");
+
+        Console.WriteLine("= Get Test: =");
+
+        bool exists = repository.ReservationStatusExists(1);
+
+        Console.WriteLine($"¿Existe reservation status 1?: {exists}");
+
+        var reservationStatus = repository.GetReservationStatus(1);
+
+        if (reservationStatus != null)
+        {
+            Console.WriteLine($"Reservation Status: {reservationStatus.Name}");
+            Console.WriteLine($"Description: {reservationStatus.Description}");
+            Console.WriteLine($"Skiping creation test, reset database for test creation test");
+        }
+        else
+        {
+            Console.WriteLine("Reservation Status cant be founded.");
+            Console.WriteLine("Reservation Status dont exists. Proceding with creation test");
+            Console.WriteLine("= Create Test: =");
+            ReservationStatus createReservationStatus = new ReservationStatus();
+            createReservationStatus.Name = "Pending";
+            createReservationStatus.Description = "The reservation is pending";
+            if (repository.CreateReservationStatus(createReservationStatus))
+            {
+                Console.WriteLine($"reservation status created correctly");
+            }
+            else
+            {
+                Console.WriteLine($"reservation status cant be created correctly, test failed");
+            }
+
+        }
+
+        
+    }
+
+    
+
 }

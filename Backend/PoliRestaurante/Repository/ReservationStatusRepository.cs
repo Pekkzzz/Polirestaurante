@@ -7,7 +7,6 @@ namespace Polirestaurante.Repository;
 
 public class ReservationStatusRepository : IReservationStatusRepository
 {
-  
    private readonly ApplicationDbContext _db;
 
    public ReservationStatusRepository(ApplicationDbContext db)
@@ -50,4 +49,6 @@ public class ReservationStatusRepository : IReservationStatusRepository
     {
         return _db.ReservationStatuses.Any(rs => rs.Name == name);
     }
+
+
 }
