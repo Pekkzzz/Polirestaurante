@@ -35,6 +35,11 @@ public class UserRepository : IUserRepository
         return _db.Users.FirstOrDefault(u => u.Id == id);
     }
 
+    public User? GetUser(string username)
+    {
+        return _db.Users.FirstOrDefault(u => u.Username == username);
+    }
+
     public bool UpdateUser(User user)
     {
         _db.Users.Update(user);
