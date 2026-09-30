@@ -44,8 +44,21 @@ app.UseAuthorization();
 app.MapControllers();
 
 //Testing
-RepositoryTestRunner.Run();
+//RepositoryTestRunner.Run();
 // close testing
+
+//Menu Console
+using (var scope = app.Services.CreateScope())
+{
+    var userRoleRepository = scope.ServiceProvider.GetRequiredService<IUserRoleRepository>();
+    var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+    var reservationStatusRepository = scope.ServiceProvider.GetRequiredService<IReservationStatusRepository>();
+    var tableRepository = scope.ServiceProvider.GetRequiredService<ITableRepository>();
+
+    ConsoleApp.Run(userRoleRepository, userRepository, reservationStatusRepository, tableRepository);
+}
+// close menu console
+
 
 app.Run();
 

@@ -80,6 +80,43 @@ public class UserRoleRepository : IUserRoleRepository
     return null;
   }
 
+  public UserRole? GetUserRole(string name)
+  {
+    using SqlConnection connection = new SqlConnection(_connectionString);
+
+    connection.Open();
+
+    string query = """
+        SELECT Id, Name, Description, IsOwner, CanEditSystems, CanEditOrders, CanSetOrdersStatus, CanSetToPickUpStatus, CanSetProductStock
+        FROM UserRole
+        WHERE Name = @Name
+        """;
+
+    using SqlCommand command = new SqlCommand(query, connection);
+
+    command.Parameters.AddWithValue("@Name", name);
+
+    using SqlDataReader reader = command.ExecuteReader();
+
+    if (reader.Read())
+    {
+        return new UserRole
+        {
+            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+            Name = reader.GetString(reader.GetOrdinal("Name")),
+            Description = reader.GetString(reader.GetOrdinal("Description")),
+            IsOwner = reader.GetBoolean(reader.GetOrdinal("IsOwner")),
+            CanEditSystems = reader.GetBoolean(reader.GetOrdinal("CanEditSystems")),
+            CanEditOrders = reader.GetBoolean(reader.GetOrdinal("CanEditOrders")),
+            CanSetOrdersStatus = reader.GetBoolean(reader.GetOrdinal("CanSetOrdersStatus")),
+            CanSetToPickUpStatus = reader.GetBoolean(reader.GetOrdinal("CanSetToPickUpStatus")),
+            CanSetProductStock = reader.GetBoolean(reader.GetOrdinal("CanSetProductStock")),
+        };
+    }
+
+    return null;
+  }
+
   public bool UpdateUserRole(UserRole userRole)
   {
     using SqlConnection connection = new SqlConnection(_connectionString);

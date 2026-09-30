@@ -81,6 +81,41 @@ public class UserRepository : IUserRepository
     return null;
   }
 
+  public User? GetUser(string username)
+  {
+    using SqlConnection connection = new SqlConnection(_connectionString);
+
+    connection.Open();
+
+    string query = """
+        SELECT Id, Username, Name, Email, PasswordHash, UserRole_ID, CreationDate
+        FROM [User]
+        WHERE Username = @Username
+        """;
+
+    using SqlCommand command = new SqlCommand(query, connection);
+
+    command.Parameters.AddWithValue("@Username", username);
+
+    using SqlDataReader reader = command.ExecuteReader();
+
+    if (reader.Read())
+    {
+        return new User
+        {
+            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+            Username = reader.GetString(reader.GetOrdinal("Username")),
+            Name = reader.GetString(reader.GetOrdinal("Name")),
+            Email = reader.GetString(reader.GetOrdinal("Email")),
+            PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
+            UserRoleId = reader.GetInt32(reader.GetOrdinal("UserRole_ID")),
+            CreationDate = reader.GetDateTime(reader.GetOrdinal("CreationDate"))
+        };
+    }
+
+    return null;
+  }
+
   public bool UpdateUser(User user)
   {
     using SqlConnection connection = new SqlConnection(_connectionString);

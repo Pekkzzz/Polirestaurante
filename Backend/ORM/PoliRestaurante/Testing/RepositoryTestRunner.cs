@@ -16,10 +16,12 @@ public class RepositoryTestRunner
             .AddJsonFile("appsettings.json")
             .Build();
 
-            //User Role Repo Testing
-            UserRoleRepositoryTest(configuration);
-            //User Repo Testing
             ApplicationDbContext db = CreateDbContext(configuration);
+
+            //User Role Repo Testing
+            UserRoleRepositoryTest(db);
+            //User Repo Testing
+            
             UserRepositoryTest(db);
 
             //Reservation Status Repo Testing
@@ -39,9 +41,9 @@ public class RepositoryTestRunner
         return new ApplicationDbContext(options);
     }
 
-    public static void UserRoleRepositoryTest(IConfiguration configuration)
+    public static void UserRoleRepositoryTest(ApplicationDbContext db)
     {
-        UserRoleRepository repository = new UserRoleRepository(configuration);
+        UserRoleRepository repository = new UserRoleRepository(db);
         Console.WriteLine("===== PRUEBA USER ROLE REPOSITORY =====");
 
         Console.WriteLine("= Get Test: =");
