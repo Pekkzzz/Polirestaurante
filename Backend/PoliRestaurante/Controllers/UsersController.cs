@@ -48,17 +48,15 @@ namespace ApiEcommerce.Controllers
       }
       UserService_Response serviceResponse = _service.Create(createUserDto);
 
-      if (!serviceResponse.Response)
+      if (!serviceResponse.Response || serviceResponse.user == null)
       {
         ModelState.AddModelError("CustomError", serviceResponse.Description);
         return BadRequest(ModelState);
       }
-
-      var user = UsersMapper.UserToEnity(createUserDto);
-      return CreatedAtRoute("GetUserByID", new { id = user.Id }, user);
+      return CreatedAtRoute("GetUserByID", new { id = serviceResponse.user.Id }, serviceResponse.user);
     }
 
-    [HttpPatch(Name = "UpdateUser")]
+    [HttpPut(Name = "UpdateUser")]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -83,7 +81,7 @@ namespace ApiEcommerce.Controllers
 
     [HttpDelete("{id:int}", Name = "DeleteUserByID")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult DeleteUser(int id)
     {
@@ -93,7 +91,7 @@ namespace ApiEcommerce.Controllers
         ModelState.AddModelError("CustomError", serviceResponse.Description);
         return BadRequest(ModelState);
       }
-      return Ok();
+      return NoContent();
     }
 
 

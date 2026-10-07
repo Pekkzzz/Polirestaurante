@@ -93,7 +93,7 @@ public class UserService : IUserService
         else
         {
             response.Response = true;
-            response.Description = "User Finded";
+            response.Description = "User not Found";
             response.user = user;
             return response;
         }
@@ -138,37 +138,32 @@ public class UserService : IUserService
 
     public UserService_Response Detele(int id)
     {
-        UserService_Response userService_Response = GetByID(id);
-        if (!userService_Response.Response)
+        UserService_Response response = GetByID(id);
+
+        if (!response.Response)
         {
-            return userService_Response;
-        }
-        if (userService_Response.user == null)
-        {
-            userService_Response.Response = false;
-            userService_Response.Description = "Something is wrong";
-            userService_Response.user = null;
-            return userService_Response;
-        }
-        else
-        {
-            userService_Response.Response = _repository.DeleteUser(userService_Response.user);
-            if (!userService_Response.Response)
-            {
-                userService_Response.Description = "User Cant Be Deleted";
-                userService_Response.user = null;
-                return userService_Response;
-            }
-            else
-            {
-                userService_Response.Response = false;
-                userService_Response.Description = "Something is wrong";
-                userService_Response.user = null;
-                return userService_Response;
-            }
-            
+            return response;
         }
 
+        if (response.user == null)
+        {
+            response.Response = false;
+            response.Description = "Something is wrong";
+            return response;
+        }
+
+        if (_repository.DeleteUser(response.user))
+        {
+            response.Response = true;
+            response.Description = "User deleted successfully";
+            response.user = null;
+            return response;
+        }
+
+        response.Response = false;
+        response.Description = "User can't be deleted";
+        response.user = null;
+        return response;
         
     }
 
@@ -183,7 +178,7 @@ public class UserService : IUserService
         {
             return new UserService_Response(false, "Name is empty or is not a valid name", null);
         }
-        if (!UtilityInternalTools.EmailValidityCheck(newUser.Name))
+        if (!UtilityInternalTools.EmailValidityCheck(newUser.Email))
         {
             return new UserService_Response(false, "Email is empty or is not a valid email", null);
         }
