@@ -11,7 +11,9 @@ public static class UsersMapper
             Id = user.Id,
             Username = user.Username,
             Name = user.Name,
-            Email = user.Email
+            Email = user.Email,
+            Password = user.PasswordHash,
+            UserRoleID = user.UserRoleId
         };
     }
 

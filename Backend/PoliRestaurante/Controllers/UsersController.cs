@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using PoliRestaurante.Models.Entity;
 using PoliRestaurante;
 
 namespace ApiEcommerce.Controllers
@@ -31,7 +32,7 @@ namespace ApiEcommerce.Controllers
         return StatusCode(500);
       }
       
-      var user = UsersMapper.UserToDto(serviceResponse.user);
+      User_Dto user = UsersMapper.UserToDto(serviceResponse.user);
       return Ok(user);
     }
 
@@ -53,7 +54,9 @@ namespace ApiEcommerce.Controllers
         ModelState.AddModelError("CustomError", serviceResponse.Description);
         return BadRequest(ModelState);
       }
-      return CreatedAtRoute("GetUserByID", new { id = serviceResponse.user.Id }, serviceResponse.user);
+      
+      User_Dto user = UsersMapper.UserToDto(serviceResponse.user);
+      return CreatedAtRoute("GetUserByID", new { id = user.Id }, user);
     }
 
     [HttpPut(Name = "UpdateUser")]
@@ -69,14 +72,14 @@ namespace ApiEcommerce.Controllers
       }
       UserService_Response serviceResponse = _service.Update(updateUserDto);
 
-      if (!serviceResponse.Response)
+      if (!serviceResponse.Response || serviceResponse.user == null)
       {
         ModelState.AddModelError("CustomError", serviceResponse.Description);
         return BadRequest(ModelState);
       }
 
-
-      return Ok(serviceResponse.user);
+      User_Dto user_Dto = UsersMapper.UserToDto(serviceResponse.user);
+      return Ok(user_Dto);
     }
 
     [HttpDelete("{id:int}", Name = "DeleteUserByID")]

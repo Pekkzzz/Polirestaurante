@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using PoliRestaurante.Models;
 using PoliRestaurante.Models.Entity;
 public class UserService : IUserService
@@ -106,11 +107,15 @@ public class UserService : IUserService
 
     public UserService_Response Update(User_UpdateDto user_UpdateDto)
     {
-        UserService_Response userService_Response = GetByID(user_UpdateDto.ID);
-        if (!userService_Response.Response)
+        bool userExists = _repository.UserExists(user_UpdateDto.ID);
+        UserService_Response userService_Response = new UserService_Response();
+        if (!userExists)
         {
+            userService_Response.Response = false;
+            userService_Response.Description = "User dont exists";
             return userService_Response;
         }
+        User user = UsersMapper.UserToEnity(user_UpdateDto);
 
         UserRoleService_Response userRoleService_Response = _userRoleService.GetByID(user_UpdateDto.UserRoleId);
         if (!userRoleService_Response.Response)
@@ -120,9 +125,8 @@ public class UserService : IUserService
             userService_Response.user = null;
             return userService_Response;
         }
-
-        User user = UsersMapper.UserToEnity(user_UpdateDto);
-
+        
+        
         userService_Response.Response = _repository.UpdateUser(user);
         if (!userService_Response.Response)
         {
