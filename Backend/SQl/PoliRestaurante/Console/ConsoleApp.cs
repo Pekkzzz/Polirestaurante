@@ -1,8 +1,10 @@
+using PoliRestaurante.Models;
+
 public static class ConsoleApp
 {
     public static void Run(
-        IUserRoleRepository userRoleRepository, IUserRepository userRepository, IReservationStatusRepository reservationStatusRepository,
-        ITableRepository tableRepository
+        IUserRoleRepository UserRoleRepository, IUserRepository UserRepository, IReservationStatusRepository ReservationStatusRepository,
+        ITableRepository TableRepository
         )
     {
         bool running = true;
@@ -30,19 +32,19 @@ public static class ConsoleApp
             switch (option)
             {
                 case "1":
-                    UserRoleMenu.UserRolesMenu(userRoleRepository);
+                    UserRoleMenu.UserRolesMenu(UserRoleRepository);
                     break;
-
+                
                 case "2":
-                    UserMenu.UsersMenu(userRepository);
+                    UserMenu.UsersMenu(UserRepository);
                     break;
 
                 case "3":
-                    Console.WriteLine("Listar usuarios todavía no implementado.");
+                    TableMenu.TablesMenu(TableRepository);
                     break;
 
                 case "4":
-                    Console.WriteLine("Eliminar usuario todavía no implementado.");
+                    ReservationStatusMenu.ReservationStatussMenu(ReservationStatusRepository);
                     break;
 
                 case "0":
