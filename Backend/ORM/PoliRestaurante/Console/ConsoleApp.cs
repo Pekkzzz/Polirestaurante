@@ -38,11 +38,11 @@ public static class ConsoleApp
                     break;
 
                 case "3":
-                    Console.WriteLine("Listar usuarios todavía no implementado.");
+                    TableMenu.TablesMenu(tableRepository);
                     break;
 
                 case "4":
-                    Console.WriteLine("Eliminar usuario todavía no implementado.");
+                    ReservationStatusMenu.ReservationStatusesMenu(reservationStatusRepository);
                     break;
 
                 case "0":
