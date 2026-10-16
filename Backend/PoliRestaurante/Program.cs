@@ -69,6 +69,8 @@ app.Run();
 //  dotnet add package Microsoft.EntityFrameworkCore.SqlServer
 //  dotnet add package Microsoft.EntityFrameworkCore.Tools
 //  dotnet add package Microsoft.EntityFrameworkCore.Design
+//  dotnet add package BCrypt.Net-Next
+
 //---------------------------------
 // 1. set up the database with "docker-compose up-d" or another already created database
 // 2. set up the api with command "dotnet run"

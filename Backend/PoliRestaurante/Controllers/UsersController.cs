@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using PoliRestaurante.Models.Entity;
-using PoliRestaurante;
 
 namespace ApiEcommerce.Controllers
 {
@@ -95,6 +93,56 @@ namespace ApiEcommerce.Controllers
         return BadRequest(ModelState);
       }
       return NoContent();
+    }
+
+    [HttpPost("Register", Name = "RegisterUser")]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> RegisterUser([FromBody] User_CreateDto createUserDto)
+    {
+      if (createUserDto == null || !ModelState.IsValid)
+      {
+        return BadRequest(ModelState);
+      }
+
+      UserService_Response userService_Response = await _service.Register(createUserDto);
+      if (!userService_Response.Response || userService_Response.user == null)
+      {
+        return StatusCode(StatusCodes.Status500InternalServerError, userService_Response.Description);
+      }
+      User_CreateDto user_CreateDto = new User_CreateDto()
+      {
+        Username = userService_Response.user.Username,
+        Name = userService_Response.user.Name,
+        Password = "",
+        Email = userService_Response.user.Email
+
+      };
+      return CreatedAtRoute("GetUserByID", new {id = userService_Response.user.Id}, user_CreateDto);
+      
+      
+    }
+
+    [HttpPost("Login", Name ="LoginUser")]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> LoginUser([FromBody] User_LoginDto user_LoginDto)
+    {
+      if (user_LoginDto == null || !ModelState.IsValid)
+      {
+        return BadRequest(ModelState);
+      }
+
+      User_LoginResponseDto user_LoginResponseDto = await _service.Login(user_LoginDto);
+      if (!user_LoginResponseDto.userService_Response.Response || user_LoginResponseDto.userService_Response.user == null)
+      {
+        return StatusCode(StatusCodes.Status401Unauthorized, user_LoginResponseDto.userService_Response.Description);
+      }
+      return Ok(user_LoginResponseDto.Token);
     }
 
 

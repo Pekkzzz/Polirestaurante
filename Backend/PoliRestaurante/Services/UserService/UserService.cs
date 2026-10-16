@@ -1,5 +1,7 @@
-using Microsoft.AspNetCore.Identity;
-using PoliRestaurante.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 using PoliRestaurante.Models.Entity;
 public class UserService : IUserService
 {   
@@ -9,10 +11,13 @@ public class UserService : IUserService
     //Services
     private readonly IUserRoleService _userRoleService;
 
-    public UserService(IUserRepository Repository, IUserRoleService userRoleService)
+    private string? secretKey;
+
+    public UserService(IUserRepository Repository, IUserRoleService userRoleService, IConfiguration configuration)
     {
         _repository = Repository;
         _userRoleService = userRoleService;
+        secretKey = configuration.GetValue<string>("ApiSettings:SecretKey");
     }
 
     public UserService_Response Create(User_CreateDto newUserDto)
@@ -169,6 +174,162 @@ public class UserService : IUserService
         response.user = null;
         return response;
         
+    }
+
+    // LOGIN & REGISTER
+    public async Task<UserService_Response> Register(User_CreateDto user_CreateDto)
+    {
+        // to use this method needs to install in project the bcrypt
+        // dotnet add package BCrypt.Net-Next --version 4.2.0
+        var encryptedPassword = BCrypt.Net.BCrypt.HashPassword(user_CreateDto.Password);
+
+        User user = new User
+        {
+        Username = user_CreateDto.Username ?? "No Username",
+        Name = user_CreateDto.Name,
+        PasswordHash = encryptedPassword,
+        Email = user_CreateDto.Email
+
+        };
+
+        if (string.IsNullOrEmpty(user_CreateDto.Username))
+        {
+            return new UserService_Response
+            {
+              Response = false,
+              Description = "Username is null or empty",
+              user = null  
+            };
+        }
+
+        if (_repository.UserExists(user_CreateDto.Username))
+        {
+            return new UserService_Response
+            {
+              Response = false,
+              Description = "Username already exists",
+              user = null  
+            };
+        }
+
+        User_CreateDto tocreateDto = new User_CreateDto
+        {
+          Username = user.Username,
+          Name = user.Name,
+          Password = user.PasswordHash,
+          Email = user.Email
+        };
+
+        UserService_Response userService_CreationResponse = Create(tocreateDto);
+        UserService_Response userService_Response = new UserService_Response();
+
+        if(!userService_CreationResponse.Response || userService_CreationResponse.user == null )
+        {
+            userService_Response.Response = false;
+            userService_Response.Description = userService_CreationResponse.Description;
+            userService_Response.user = null;
+            return userService_Response;
+        }
+        else
+        {
+            userService_Response.Response = true;
+            userService_Response.Description = "User Registed Correctly";
+            user.PasswordHash = "";
+            userService_Response.user = user;
+            return userService_Response;
+        }
+ 
+    }
+
+    public async Task<User_LoginResponseDto> Login(User_LoginDto user_LoginDto)
+    {
+        UserService_Response userService_Response = new UserService_Response();
+        if (string.IsNullOrEmpty(user_LoginDto.Username))
+        {
+            userService_Response = new UserService_Response
+            {
+                Response = false,
+                Description = "Username is Required",
+                user = null
+            };
+
+            return new User_LoginResponseDto()
+            {
+                userService_Response = userService_Response,
+                Token = ""
+            };
+        }
+
+        User? user = _repository.GetUser(user_LoginDto.Username);
+        if (user == null)
+        {
+            userService_Response = new UserService_Response
+            {
+                Response = false,
+                Description = "User not found",
+                user = null
+            };
+
+            return new User_LoginResponseDto()
+            {
+                userService_Response = userService_Response,
+                Token = ""
+            };
+        }
+
+        if (!BCrypt.Net.BCrypt.Verify(user_LoginDto.Password, user.PasswordHash))
+        {
+            userService_Response = new UserService_Response
+            {
+                Response = false,
+                Description = "Incorrect Credentials",
+                user = null
+            };
+
+            return new User_LoginResponseDto()
+            {
+                userService_Response = userService_Response,
+                Token = ""
+            };
+        }
+
+        //JWT
+        var handlerToken = new JwtSecurityTokenHandler();
+        if (string.IsNullOrWhiteSpace(secretKey))
+        {
+            throw new InvalidOperationException("Secret key is not configurated");
+        }
+        var key = Encoding.UTF8.GetBytes(secretKey);
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[]
+            {
+             new Claim("id", user.Id.ToString()),
+             new Claim("username", user.Username.ToString()),
+             new Claim("role_id", user.UserRoleId.ToString())
+
+            }
+            ),
+            Expires = DateTime.UtcNow.AddHours(2),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        };
+
+        var token = handlerToken.CreateToken(tokenDescriptor);
+        return new User_LoginResponseDto()
+        {
+            Token = handlerToken.WriteToken(token),
+            userService_Response = new UserService_Response()
+            {
+                Response = true,
+                Description = "Login Succesfully",
+                user = new User()
+                {
+                    Username = user.Username,
+                    Name = user.Name,
+                    UserRoleId = user.UserRoleId
+                }
+            }
+        };
     }
 
     //----Utility----

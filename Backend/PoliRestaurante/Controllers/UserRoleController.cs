@@ -44,7 +44,7 @@ namespace ApiEcommerce.Controllers
         return BadRequest(ModelState);
       }
       UserRoleService_Response userRoleService_Response = _service.Create(createUserRoleDto);
-      if (!userRoleService_Response.Response && userRoleService_Response.userRole == null)
+      if (!userRoleService_Response.Response || userRoleService_Response.userRole == null)
       {
         ModelState.AddModelError("CustomError", userRoleService_Response.Description);
         return StatusCode(500, ModelState);
