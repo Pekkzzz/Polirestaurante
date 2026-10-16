@@ -59,10 +59,10 @@ public class UserRepository : IUserRepository
         return _db.Users.Any(u => u.Id == id);
     }
 
-    public bool UserExists(string name)
+    public bool UserExists(string username)
     {
         return _db.Users.Any(u =>
-            u.Name.Trim().ToLower() == name.Trim().ToLower());
+            u.Username.Trim().ToLower() == username.Trim().ToLower());
     }
 
 }
