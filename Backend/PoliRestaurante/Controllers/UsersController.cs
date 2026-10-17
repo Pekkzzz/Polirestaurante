@@ -60,7 +60,7 @@ namespace ApiEcommerce.Controllers
     [HttpPut(Name = "UpdateUser")]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult UpdateUser([FromBody] User_UpdateDto updateUserDto)
     {

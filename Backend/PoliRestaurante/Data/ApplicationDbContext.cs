@@ -16,11 +16,11 @@ public partial class ApplicationDbContext : DbContext
     {
     }
 
-    public virtual DbSet<ModificationsHistory> ModificationsHistories { get; set; }
-
     public virtual DbSet<Order> Orders { get; set; }
 
     public virtual DbSet<OrderDetail> OrderDetails { get; set; }
+
+    public virtual DbSet<OrderDetailStatus> OrderDetailStatuses { get; set; }
 
     public virtual DbSet<OrderModification> OrderModifications { get; set; }
 
@@ -30,15 +30,11 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<PaymentStatus> PaymentStatuses { get; set; }
 
-    public virtual DbSet<PaymentType> PaymentTypes { get; set; }
-
     public virtual DbSet<PickupStatus> PickupStatuses { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
 
     public virtual DbSet<ProductType> ProductTypes { get; set; }
-
-    public virtual DbSet<Receipt> Receipts { get; set; }
 
     public virtual DbSet<Reservation> Reservations { get; set; }
 
@@ -58,24 +54,6 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ModificationsHistory>(entity =>
-        {
-            entity.ToTable("ModificationsHistory");
-
-            entity.HasIndex(e => e.UserId, "IX_ModificationsHistory_User_ID");
-
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.Description)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.UserId).HasColumnName("User_ID");
-
-            entity.HasOne(d => d.User).WithMany(p => p.ModificationsHistories)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ModificationsHistory_User");
-        });
-
         modelBuilder.Entity<Order>(entity =>
         {
             entity.ToTable("Order");
@@ -100,26 +78,28 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.OrderStatus).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.OrderStatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Order_OrderStatus");
+                .HasConstraintName("FK_Order_OrderStatus1");
 
             entity.HasOne(d => d.OrderType).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.OrderTypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Order_OrderType");
+                .HasConstraintName("FK_Order_OrderType1");
 
             entity.HasOne(d => d.PaymentStatus).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.PaymentStatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Order_PaymentStatus");
+                .HasConstraintName("FK_Order_PaymentStatus1");
 
             entity.HasOne(d => d.Table).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.TableId)
-                .HasConstraintName("FK_Order_Table");
+                .HasConstraintName("FK_Order_Table1");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
             entity.ToTable("OrderDetail");
+
+            entity.HasIndex(e => e.OrderDetailStatusId, "IX_OrderDetail_OrderDetailStatus_ID");
 
             entity.HasIndex(e => e.OrderId, "IX_OrderDetail_Order_ID");
 
@@ -129,18 +109,39 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+            entity.Property(e => e.OrderDetailStatusId).HasColumnName("OrderDetailStatus_ID");
             entity.Property(e => e.OrderId).HasColumnName("Order_ID");
             entity.Property(e => e.ProductId).HasColumnName("Product_ID");
+
+            entity.HasOne(d => d.OrderDetailStatus).WithMany(p => p.OrderDetails)
+                .HasForeignKey(d => d.OrderDetailStatusId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_OrderDetail_OrderDetailStatus1");
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_OrderDetail_Order");
+                .HasConstraintName("FK_OrderDetail_Order1");
 
             entity.HasOne(d => d.Product).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_OrderDetail_Product");
+                .HasConstraintName("FK_OrderDetail_Product1");
+        });
+
+        modelBuilder.Entity<OrderDetailStatus>(entity =>
+        {
+            entity.ToTable("OrderDetailStatus");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("ID");
+            entity.Property(e => e.Description)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<OrderModification>(entity =>
@@ -159,12 +160,12 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Order).WithMany(p => p.OrderModifications)
                 .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_OrderModifications_Order");
+                .HasConstraintName("FK_OrderModifications_Order1");
 
             entity.HasOne(d => d.User).WithMany(p => p.OrderModifications)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_OrderModifications_User");
+                .HasConstraintName("FK_OrderModifications_User1");
         });
 
         modelBuilder.Entity<OrderStatus>(entity =>
@@ -208,19 +209,6 @@ public partial class ApplicationDbContext : DbContext
                 .IsUnicode(false);
         });
 
-        modelBuilder.Entity<PaymentType>(entity =>
-        {
-            entity.ToTable("PaymentType");
-
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.Description)
-                .HasMaxLength(45)
-                .IsUnicode(false);
-            entity.Property(e => e.Name)
-                .HasMaxLength(45)
-                .IsUnicode(false);
-        });
-
         modelBuilder.Entity<PickupStatus>(entity =>
         {
             entity.ToTable("PickupStatus");
@@ -253,7 +241,7 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.ProductType).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ProductTypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Product_ProductType");
+                .HasConstraintName("FK_Product_ProductType1");
         });
 
         modelBuilder.Entity<ProductType>(entity =>
@@ -267,30 +255,6 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-        });
-
-        modelBuilder.Entity<Receipt>(entity =>
-        {
-            entity.ToTable("Receipt");
-
-            entity.HasIndex(e => e.OrderId, "IX_Receipt_Order_ID");
-
-            entity.HasIndex(e => e.PaymentTypeId, "IX_Receipt_PaymentType_ID");
-
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.OrderId).HasColumnName("Order_ID");
-            entity.Property(e => e.PaymentAmount).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.PaymentTypeId).HasColumnName("PaymentType_ID");
-
-            entity.HasOne(d => d.Order).WithMany(p => p.Receipts)
-                .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Receipt_Order");
-
-            entity.HasOne(d => d.PaymentType).WithMany(p => p.Receipts)
-                .HasForeignKey(d => d.PaymentTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Receipt_PaymentType");
         });
 
         modelBuilder.Entity<Reservation>(entity =>
@@ -308,12 +272,12 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.ReservationStatus).WithMany(p => p.Reservations)
                 .HasForeignKey(d => d.ReservationStatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Reservation_ReservationStatus");
+                .HasConstraintName("FK_Reservation_ReservationStatus1");
 
             entity.HasOne(d => d.User).WithMany(p => p.Reservations)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Reservation_User");
+                .HasConstraintName("FK_Reservation_User1");
 
             entity.HasMany(d => d.Tables).WithMany(p => p.Reservations)
                 .UsingEntity<Dictionary<string, object>>(
@@ -321,16 +285,15 @@ public partial class ApplicationDbContext : DbContext
                     r => r.HasOne<Table>().WithMany()
                         .HasForeignKey("TableId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_Reservation_has_Table_Table"),
+                        .HasConstraintName("FK_Reservation_has_Table_Table1"),
                     l => l.HasOne<Reservation>().WithMany()
                         .HasForeignKey("ReservationId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_Reservation_has_Table_Reservation"),
+                        .HasConstraintName("FK_Reservation_has_Table_Reservation1"),
                     j =>
                     {
                         j.HasKey("ReservationId", "TableId");
                         j.ToTable("Reservation_has_Table");
-                        j.HasIndex(new[] { "ReservationId" }, "IX_Reservation_has_Table_Reservation_ID");
                         j.HasIndex(new[] { "TableId" }, "IX_Reservation_has_Table_Table_ID");
                         j.IndexerProperty<int>("ReservationId").HasColumnName("Reservation_ID");
                         j.IndexerProperty<int>("TableId").HasColumnName("Table_ID");
@@ -380,17 +343,17 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Order).WithMany(p => p.ToPickUps)
                 .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ToPickUp_Order");
+                .HasConstraintName("FK_ToPickUp_Order1");
 
             entity.HasOne(d => d.PickupStatus).WithMany(p => p.ToPickUps)
                 .HasForeignKey(d => d.PickupStatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ToPickUp_PickupStatus");
+                .HasConstraintName("FK_ToPickUp_PickupStatus1");
 
             entity.HasOne(d => d.User).WithMany(p => p.ToPickUps)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ToPickUp_User");
+                .HasConstraintName("FK_ToPickUp_User1");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -422,7 +385,7 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.UserRole).WithMany(p => p.Users)
                 .HasForeignKey(d => d.UserRoleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_User_UserRole");
+                .HasConstraintName("FK_User_UserRole1");
         });
 
         modelBuilder.Entity<UserRole>(entity =>

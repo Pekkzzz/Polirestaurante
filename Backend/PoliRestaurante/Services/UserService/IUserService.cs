@@ -9,4 +9,5 @@ public interface IUserService
     public UserService_Response Detele(int id);
     public Task<User_LoginResponseDto> Login(User_LoginDto user_LoginDto);
     public Task<UserService_Response> Register(User_CreateDto user_CreateDto);
+    public UserService_Response ComprobateUser(User_LoginDto user_LoginDto);
 }

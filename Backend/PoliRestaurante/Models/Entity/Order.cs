@@ -33,8 +33,6 @@ public partial class Order
 
     public virtual PaymentStatus PaymentStatus { get; set; } = null!;
 
-    public virtual ICollection<Receipt> Receipts { get; set; } = new List<Receipt>();
-
     public virtual Table? Table { get; set; }
 
     public virtual ICollection<ToPickUp> ToPickUps { get; set; } = new List<ToPickUp>();

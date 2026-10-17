@@ -24,6 +24,11 @@ public class TableRepository : ITableRepository
         return _db.Tables.FirstOrDefault(t => t.Id == id);
     }
 
+    public Table? GetTableByNumber (int number)
+    {
+        return _db.Tables.FirstOrDefault(t => t.TableNum == number);
+    }
+
     public bool UpdateTable (Table table)
     {
         _db.Tables.Update(table);

@@ -23,8 +23,6 @@ public partial class User
 
     public int UserRoleId { get; set; }
 
-    public virtual ICollection<ModificationsHistory> ModificationsHistories { get; set; } = new List<ModificationsHistory>();
-
     public virtual ICollection<OrderModification> OrderModifications { get; set; } = new List<OrderModification>();
 
     public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();

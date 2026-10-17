@@ -60,7 +60,7 @@ namespace ApiEcommerce.Controllers
     [HttpPatch(Name = "UpdateUserRole")]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult UpdateUser([FromBody] UserRole_UpdateDto updateUserRoleDto)
     {
@@ -70,14 +70,14 @@ namespace ApiEcommerce.Controllers
       }
       UserRoleService_Response serviceResponse = _service.Update(updateUserRoleDto);
 
-      if (!serviceResponse.Response)
+      if (!serviceResponse.Response || serviceResponse.userRole == null)
       {
         ModelState.AddModelError("CustomError", serviceResponse.Description);
         return BadRequest(ModelState);
       }
 
-
-      return Ok(serviceResponse.userRole);
+      UserRole_Dto userRole_Dto = UsersMapper.UserRoleToDto(serviceResponse.userRole);
+      return Ok(userRole_Dto);
     }
 
     [HttpDelete("{id:int}", Name = "DeleteUserRoleByID")]

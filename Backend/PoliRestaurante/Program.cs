@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Polirestaurante.Repository;
-using Polirestaurante.Tests;
 using PoliRestaurante.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,12 +13,19 @@ builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IReservationStatusRepository, ReservationStatusRepository>();
 builder.Services.AddScoped<ITableRepository, TableRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderTypeRepository, OrderTypeRepository>();
+builder.Services.AddScoped<IOrderStatusRepository, OrderStatusRepository>();
+builder.Services.AddScoped<IPaymentStatusRepository, PaymentStatusRepository>();
+
 
 
 //Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 builder.Services.AddScoped<IReservationStatusService, ReservationStatusService>();
+builder.Services.AddScoped<ITableService, TableService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -47,17 +53,29 @@ app.MapControllers();
 //RepositoryTestRunner.Run();
 // close testing
 
-//Menu Console
+
+
+
 using (var scope = app.Services.CreateScope())
-{
-    var userRoleRepository = scope.ServiceProvider.GetRequiredService<IUserRoleRepository>();
+{   
     var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+    var userRoleRepository = scope.ServiceProvider.GetRequiredService<IUserRoleRepository>();
     var reservationStatusRepository = scope.ServiceProvider.GetRequiredService<IReservationStatusRepository>();
     var tableRepository = scope.ServiceProvider.GetRequiredService<ITableRepository>();
+    var orderRepository = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
+    var orderTypeRepository = scope.ServiceProvider.GetRequiredService<IOrderTypeRepository>();
+    var orderStatusRepository = scope.ServiceProvider.GetRequiredService<IOrderStatusRepository>();
+    var paymentStatusRepository = scope.ServiceProvider.GetRequiredService<IPaymentStatusRepository>();
 
+    //Default Config
+    DefaultConfiguration.Run(
+        userRepository, userRoleRepository,
+        reservationStatusRepository,
+        tableRepository,
+        orderRepository, orderTypeRepository, orderStatusRepository, paymentStatusRepository);
+    //Menu Console
     ConsoleApp.Run(userRoleRepository, userRepository, reservationStatusRepository, tableRepository);
 }
-// close menu console
 
 app.Run();
 

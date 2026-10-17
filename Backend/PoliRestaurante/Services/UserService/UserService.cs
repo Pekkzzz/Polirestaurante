@@ -23,7 +23,6 @@ public class UserService : IUserService
     public UserService_Response Create(User_CreateDto newUserDto)
     {
         User newUser = UsersMapper.UserToEnity(newUserDto);
-        newUser.UserRoleId = 1; //reserved userRolesID for default user creation
         UserService_Response response = ComprobateUser(newUser);
         if (!response.Response)
         {
@@ -39,29 +38,17 @@ public class UserService : IUserService
 
         }
 
-        if (!_userRoleService.GetByID(newUser.UserRoleId).Response)
+        newUser.CreationDate = DateTime.Now;
+        UserRole? userRole = _userRoleService.GetByName(DefaultConfiguration.DefaulUserRoleName).userRole;
+        if (userRole == null)
         {
-            UserRole_CreateDto userRole_CreateDto = new UserRole_CreateDto();
-            userRole_CreateDto.Name = "Default";
-            userRole_CreateDto.Description = "Default Role for all new users";
-            userRole_CreateDto.IsOwner = false;
-            userRole_CreateDto.CanEditSystems = false;
-            userRole_CreateDto.CanEditOrders = false;
-            userRole_CreateDto.CanSetOrdersStatus = false;
-            userRole_CreateDto.CanSetToPickUpStatus = false;
-            userRole_CreateDto.CanSetProductStock = false;
-
-            if (!_userRoleService.Create(userRole_CreateDto).Response)
-            {
-                response.Response = false;
-                response.Description = "Error Creating Default role for new users, user and role not created";
-                response.user = null;
-                return response;
-            }
-            
+            response.Response = false;
+            response.Description = "User cant be created, default role cant be founded";
+            response.user = null;
+            return response;
         }
 
-        newUser.CreationDate = DateTime.Now;
+        newUser.UserRoleId = userRole.Id;
         if (_repository.CreateUser(newUser))
         {
             response.Response = true;
@@ -330,6 +317,58 @@ public class UserService : IUserService
                 }
             }
         };
+    }
+
+    public UserService_Response ComprobateUser(User_LoginDto user_LoginDto)
+    {
+        UserService_Response userService_Response = new UserService_Response();
+
+        if (string.IsNullOrEmpty(user_LoginDto.Username))
+        {
+            userService_Response = new UserService_Response
+            {
+                Response = false,
+                Description = "Username is Required",
+                user = null
+            };
+
+            return userService_Response;
+        }
+
+        User? user = _repository.GetUser(user_LoginDto.Username);
+        if (user == null)
+        {
+            userService_Response = new UserService_Response
+            {
+                Response = false,
+                Description = "User not found",
+                user = null
+            };
+
+            return userService_Response;
+        }
+
+        if (!BCrypt.Net.BCrypt.Verify(user_LoginDto.Password, user.PasswordHash))
+        {
+            userService_Response = new UserService_Response
+            {
+                Response = false,
+                Description = "Incorrect Credentials",
+                user = null
+            };
+
+            return userService_Response;
+        }
+        else
+        {
+            userService_Response = new UserService_Response
+            {
+                Response = true,
+                Description = "Correct Comprobation",
+                user = user
+            };
+            return userService_Response;
+        }
     }
 
     //----Utility----

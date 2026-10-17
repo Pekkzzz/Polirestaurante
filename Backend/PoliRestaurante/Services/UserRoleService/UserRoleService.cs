@@ -52,6 +52,7 @@ public class UserRoleService : IUserRoleService
 
         if (id <= 0)
         {
+            response.Response = false;
             response.Description = "User Role id cant be negative or 0";
             return response;
         }
@@ -59,6 +60,34 @@ public class UserRoleService : IUserRoleService
         UserRole? userRole = _repository.GetUserRole(id);
         if (userRole == null)
         {
+            response.Response = false;
+            response.Description = "User Role id cant be finded";
+            return response;
+        }
+        else
+        {
+            response.Response = true;
+            response.Description = "User Role Finded";
+            response.userRole = userRole;
+            return response;
+        }
+    }
+
+    public UserRoleService_Response GetByName(string name)
+    {
+        UserRoleService_Response response = new UserRoleService_Response();
+
+        if (string.IsNullOrEmpty(name))
+        {
+            response.Response = false;
+            response.Description = "User Role id cant be empty";
+            return response;
+        }
+
+        UserRole? userRole = _repository.GetUserRole(name);
+        if (userRole == null)
+        {
+            response.Response = false;
             response.Description = "User Role id cant be finded";
             return response;
         }

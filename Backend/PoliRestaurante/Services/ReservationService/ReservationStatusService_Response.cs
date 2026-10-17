@@ -1,4 +1,3 @@
-using PoliRestaurante.Models;
 using PoliRestaurante.Models.Entity;
 
 public class ReservationStatusService_Response

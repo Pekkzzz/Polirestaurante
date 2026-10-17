@@ -63,7 +63,7 @@ namespace ApiEcommerce.Controllers
     [HttpPatch(Name = "UpdateReservationStatus")]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult UpdateUser([FromBody] ReservationStatus_UpdateDto updateReservationStatusDto)
     {
@@ -73,14 +73,14 @@ namespace ApiEcommerce.Controllers
       }
       ReservationStatusService_Response serviceResponse = _service.Update(updateReservationStatusDto);
 
-      if (!serviceResponse.Response)
+      if (!serviceResponse.Response || serviceResponse.reservationStatus == null)
       {
         ModelState.AddModelError("CustomError", serviceResponse.Description);
         return BadRequest(ModelState);
       }
 
-
-      return Ok(serviceResponse.reservationStatus);
+      var user = ReservationsMapper.ReservationStatusToDto(serviceResponse.reservationStatus);
+      return Ok(user);
     }
 
     [HttpDelete("{id:int}", Name = "DeleteReservationStatusByID")]
