@@ -1,4 +1,3 @@
-using PoliRestaurante.Models;
 using PoliRestaurante.Models.Entity;
 
 public class UserRoleService : IUserRoleService
@@ -102,55 +101,53 @@ public class UserRoleService : IUserRoleService
 
     public UserRoleService_Response Update(UserRole_UpdateDto userRole_UpdateDto)
     {
-        UserRoleService_Response userRoleService_Response = GetByID(userRole_UpdateDto.Id);
-        if (!userRoleService_Response.Response)
+        UserRoleService_Response response = new UserRoleService_Response();
+        if (!_repository.UserRoleExists(userRole_UpdateDto.Id))
         {
-            return userRoleService_Response;
+            response.Response = false;
+            response.Description = "User Role id cant be finded";
+            response.userRole= null;
+            return response;
         }
 
         UserRole userRole = UsersMapper.UserRoleToEnity(userRole_UpdateDto);
-
-        userRoleService_Response.Response = _repository.UpdateUserRole(userRole);
-        if (!userRoleService_Response.Response)
+        if (!_repository.UpdateUserRole(userRole))
         {
-            userRoleService_Response.userRole = null;
-            userRoleService_Response.Description = "UserRole cant be updated";
-            return userRoleService_Response;
+            response.Response = false;
+            response.Description = "User Role cant be updated by a asystem error";
+            response.userRole = null;
+            return response;
         }
-        
-        userRoleService_Response = GetByID(userRole_UpdateDto.Id);
-        userRoleService_Response.Description = "UserRole Updated";
-        return userRoleService_Response;
+
+        response.Response = true;
+        response.Description = "User Role updated";
+        response.userRole = userRole;
+        return response;
     }
 
     public UserRoleService_Response Detele(int id)
     {
-        UserRoleService_Response userRoleService_Response = GetByID(id);
-        if (!userRoleService_Response.Response)
+        UserRoleService_Response response = GetByID(id);
+        if (!response.Response || response.userRole ==null)
         {
-            return userRoleService_Response;
+            response.Response = false;
+            response.Description = "User Role cant be founded";
+            response.userRole = null;
+            return response;
         }
-        if (userRoleService_Response.userRole == null)
+        if (!_repository.DeleteUserRole(response.userRole))
         {
-            userRoleService_Response.Response = false;
-            userRoleService_Response.Description = "Something is wrong";
-            userRoleService_Response.userRole = null;
-            return userRoleService_Response;
+            response.Response = false;
+            response.Description = "User Cant Be Deleted";
+            response.userRole = null;
+            return response;
         }
         else
         {
-            userRoleService_Response.Response = _repository.DeleteUserRole(userRoleService_Response.userRole);
-            if (!userRoleService_Response.Response)
-            {
-                userRoleService_Response.Description = "User Cant Be Deleted";
-                userRoleService_Response.userRole = null;
-                return userRoleService_Response;
-            }
-            else
-            {
-                return userRoleService_Response;
-            }
-            
+            response.Response = true;
+            response.Description = "User Deleted";
+            response.userRole = null;
+            return response;
         }
 
         

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace PoliRestaurante.Models.Entity;
+﻿namespace PoliRestaurante.Models.Entity;
 
 public partial class Product
 {

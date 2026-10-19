@@ -1,7 +1,7 @@
 /*
     PoliRestaurante - SQL Server
-    Conversión del script MySQL Workbench del 17/10/2026.
-    Se conserva la estructura del modelo proporcionado.
+    Convertido desde PoliRestaurante_MYSQL_Script(20261018-221532).sql
+    Todas las columnas ID que eran AUTO_INCREMENT se convierten a IDENTITY(1,1).
 */
 
 IF DB_ID(N'PoliRestaurante') IS NULL
@@ -24,7 +24,8 @@ CREATE TABLE [dbo].[UserRole]
     [CanSetOrdersStatus] BIT NOT NULL,
     [CanSetToPickUpStatus] BIT NOT NULL,
     [CanSetProductStock] BIT NOT NULL,
-    CONSTRAINT [PK_UserRole] PRIMARY KEY ([ID])
+    CONSTRAINT [PK_UserRole] PRIMARY KEY ([ID]),
+    CONSTRAINT [UQ_UserRole_Name] UNIQUE ([Name])
 );
 GO
 
@@ -42,8 +43,7 @@ CREATE TABLE [dbo].[User]
     CONSTRAINT [PK_User] PRIMARY KEY ([ID]),
     CONSTRAINT [UQ_User_Email] UNIQUE ([Email]),
     CONSTRAINT [UQ_User_Username] UNIQUE ([Username]),
-    CONSTRAINT [FK_User_UserRole1] FOREIGN KEY ([UserRole_ID])
-        REFERENCES [dbo].[UserRole] ([ID])
+    CONSTRAINT [FK_User_UserRole1] FOREIGN KEY ([UserRole_ID]) REFERENCES [dbo].[UserRole] ([ID])
 );
 GO
 CREATE INDEX [IX_User_UserRole_ID] ON [dbo].[User] ([UserRole_ID]);
@@ -65,10 +65,8 @@ CREATE TABLE [dbo].[Reservation]
     [ReservationStatus_ID] INT NOT NULL,
     [User_ID] INT NOT NULL,
     CONSTRAINT [PK_Reservation] PRIMARY KEY ([ID]),
-    CONSTRAINT [FK_Reservation_ReservationStatus1] FOREIGN KEY ([ReservationStatus_ID])
-        REFERENCES [dbo].[ReservationStatus] ([ID]),
-    CONSTRAINT [FK_Reservation_User1] FOREIGN KEY ([User_ID])
-        REFERENCES [dbo].[User] ([ID])
+    CONSTRAINT [FK_Reservation_ReservationStatus1] FOREIGN KEY ([ReservationStatus_ID]) REFERENCES [dbo].[ReservationStatus] ([ID]),
+    CONSTRAINT [FK_Reservation_User1] FOREIGN KEY ([User_ID]) REFERENCES [dbo].[User] ([ID])
 );
 GO
 CREATE INDEX [IX_Reservation_ReservationStatus_ID] ON [dbo].[Reservation] ([ReservationStatus_ID]);
@@ -134,14 +132,10 @@ CREATE TABLE [dbo].[Order]
     [OrderType_ID] INT NOT NULL,
     [Table_ID] INT NULL,
     CONSTRAINT [PK_Order] PRIMARY KEY ([ID]),
-    CONSTRAINT [FK_Order_PaymentStatus1] FOREIGN KEY ([PaymentStatus_ID])
-        REFERENCES [dbo].[PaymentStatus] ([ID]),
-    CONSTRAINT [FK_Order_OrderStatus1] FOREIGN KEY ([OrderStatus_ID])
-        REFERENCES [dbo].[OrderStatus] ([ID]),
-    CONSTRAINT [FK_Order_OrderType1] FOREIGN KEY ([OrderType_ID])
-        REFERENCES [dbo].[OrderType] ([ID]),
-    CONSTRAINT [FK_Order_Table1] FOREIGN KEY ([Table_ID])
-        REFERENCES [dbo].[Table] ([ID])
+    CONSTRAINT [FK_Order_PaymentStatus1] FOREIGN KEY ([PaymentStatus_ID]) REFERENCES [dbo].[PaymentStatus] ([ID]),
+    CONSTRAINT [FK_Order_OrderStatus1] FOREIGN KEY ([OrderStatus_ID]) REFERENCES [dbo].[OrderStatus] ([ID]),
+    CONSTRAINT [FK_Order_OrderType1] FOREIGN KEY ([OrderType_ID]) REFERENCES [dbo].[OrderType] ([ID]),
+    CONSTRAINT [FK_Order_Table1] FOREIGN KEY ([Table_ID]) REFERENCES [dbo].[Table] ([ID])
 );
 GO
 CREATE INDEX [IX_Order_PaymentStatus_ID] ON [dbo].[Order] ([PaymentStatus_ID]);
@@ -160,12 +154,9 @@ CREATE TABLE [dbo].[ToPickUp]
     [User_ID] INT NOT NULL,
     [Order_ID] INT NOT NULL,
     CONSTRAINT [PK_ToPickUp] PRIMARY KEY ([ID]),
-    CONSTRAINT [FK_ToPickUp_PickupStatus1] FOREIGN KEY ([PickupStatus_ID])
-        REFERENCES [dbo].[PickupStatus] ([ID]),
-    CONSTRAINT [FK_ToPickUp_User1] FOREIGN KEY ([User_ID])
-        REFERENCES [dbo].[User] ([ID]),
-    CONSTRAINT [FK_ToPickUp_Order1] FOREIGN KEY ([Order_ID])
-        REFERENCES [dbo].[Order] ([ID])
+    CONSTRAINT [FK_ToPickUp_PickupStatus1] FOREIGN KEY ([PickupStatus_ID]) REFERENCES [dbo].[PickupStatus] ([ID]),
+    CONSTRAINT [FK_ToPickUp_User1] FOREIGN KEY ([User_ID]) REFERENCES [dbo].[User] ([ID]),
+    CONSTRAINT [FK_ToPickUp_Order1] FOREIGN KEY ([Order_ID]) REFERENCES [dbo].[Order] ([ID])
 );
 GO
 CREATE INDEX [IX_ToPickUp_PickupStatus_ID] ON [dbo].[ToPickUp] ([PickupStatus_ID]);
@@ -178,7 +169,8 @@ CREATE TABLE [dbo].[ProductType]
     [ID] INT IDENTITY(1,1) NOT NULL,
     [Name] VARCHAR(255) NOT NULL,
     [Description] VARCHAR(255) NOT NULL,
-    CONSTRAINT [PK_ProductType] PRIMARY KEY ([ID])
+    CONSTRAINT [PK_ProductType] PRIMARY KEY ([ID]),
+    CONSTRAINT [UQ_ProductType_Name] UNIQUE ([Name])
 );
 GO
 
@@ -191,8 +183,8 @@ CREATE TABLE [dbo].[Product]
     [Price] DECIMAL(10,2) NOT NULL,
     [ProductType_ID] INT NOT NULL,
     CONSTRAINT [PK_Product] PRIMARY KEY ([ID]),
-    CONSTRAINT [FK_Product_ProductType1] FOREIGN KEY ([ProductType_ID])
-        REFERENCES [dbo].[ProductType] ([ID])
+    CONSTRAINT [UQ_Product_Name] UNIQUE ([Name]),
+    CONSTRAINT [FK_Product_ProductType1] FOREIGN KEY ([ProductType_ID]) REFERENCES [dbo].[ProductType] ([ID])
 );
 GO
 CREATE INDEX [IX_Product_ProductType_ID] ON [dbo].[Product] ([ProductType_ID]);
@@ -200,10 +192,11 @@ GO
 
 CREATE TABLE [dbo].[OrderDetailStatus]
 (
-    [ID] INT NOT NULL,
+    [ID] INT IDENTITY(1,1) NOT NULL,
     [Name] VARCHAR(255) NOT NULL,
     [Description] VARCHAR(255) NULL,
-    CONSTRAINT [PK_OrderDetailStatus] PRIMARY KEY ([ID])
+    CONSTRAINT [PK_OrderDetailStatus] PRIMARY KEY ([ID]),
+    CONSTRAINT [UQ_OrderDetailStatus_Name] UNIQUE ([Name])
 );
 GO
 
@@ -211,16 +204,14 @@ CREATE TABLE [dbo].[OrderDetail]
 (
     [ID] INT IDENTITY(1,1) NOT NULL,
     [Description] VARCHAR(255) NOT NULL,
+    [Observations] VARCHAR(255) NULL,
     [Product_ID] INT NOT NULL,
     [Order_ID] INT NOT NULL,
     [OrderDetailStatus_ID] INT NOT NULL,
     CONSTRAINT [PK_OrderDetail] PRIMARY KEY ([ID]),
-    CONSTRAINT [FK_OrderDetail_Product1] FOREIGN KEY ([Product_ID])
-        REFERENCES [dbo].[Product] ([ID]),
-    CONSTRAINT [FK_OrderDetail_Order1] FOREIGN KEY ([Order_ID])
-        REFERENCES [dbo].[Order] ([ID]),
-    CONSTRAINT [FK_OrderDetail_OrderDetailStatus1] FOREIGN KEY ([OrderDetailStatus_ID])
-        REFERENCES [dbo].[OrderDetailStatus] ([ID])
+    CONSTRAINT [FK_OrderDetail_Product1] FOREIGN KEY ([Product_ID]) REFERENCES [dbo].[Product] ([ID]),
+    CONSTRAINT [FK_OrderDetail_Order1] FOREIGN KEY ([Order_ID]) REFERENCES [dbo].[Order] ([ID]),
+    CONSTRAINT [FK_OrderDetail_OrderDetailStatus1] FOREIGN KEY ([OrderDetailStatus_ID]) REFERENCES [dbo].[OrderDetailStatus] ([ID])
 );
 GO
 CREATE INDEX [IX_OrderDetail_Product_ID] ON [dbo].[OrderDetail] ([Product_ID]);
@@ -236,10 +227,8 @@ CREATE TABLE [dbo].[OrderModifications]
     [User_ID] INT NOT NULL,
     [Order_ID] INT NOT NULL,
     CONSTRAINT [PK_OrderModifications] PRIMARY KEY ([ID]),
-    CONSTRAINT [FK_OrderModifications_User1] FOREIGN KEY ([User_ID])
-        REFERENCES [dbo].[User] ([ID]),
-    CONSTRAINT [FK_OrderModifications_Order1] FOREIGN KEY ([Order_ID])
-        REFERENCES [dbo].[Order] ([ID])
+    CONSTRAINT [FK_OrderModifications_User1] FOREIGN KEY ([User_ID]) REFERENCES [dbo].[User] ([ID]),
+    CONSTRAINT [FK_OrderModifications_Order1] FOREIGN KEY ([Order_ID]) REFERENCES [dbo].[Order] ([ID])
 );
 GO
 CREATE INDEX [IX_OrderModifications_User_ID] ON [dbo].[OrderModifications] ([User_ID]);
@@ -251,10 +240,8 @@ CREATE TABLE [dbo].[Reservation_has_Table]
     [Reservation_ID] INT NOT NULL,
     [Table_ID] INT NOT NULL,
     CONSTRAINT [PK_Reservation_has_Table] PRIMARY KEY ([Reservation_ID], [Table_ID]),
-    CONSTRAINT [FK_Reservation_has_Table_Reservation1] FOREIGN KEY ([Reservation_ID])
-        REFERENCES [dbo].[Reservation] ([ID]),
-    CONSTRAINT [FK_Reservation_has_Table_Table1] FOREIGN KEY ([Table_ID])
-        REFERENCES [dbo].[Table] ([ID])
+    CONSTRAINT [FK_Reservation_has_Table_Reservation1] FOREIGN KEY ([Reservation_ID]) REFERENCES [dbo].[Reservation] ([ID]),
+    CONSTRAINT [FK_Reservation_has_Table_Table1] FOREIGN KEY ([Table_ID]) REFERENCES [dbo].[Table] ([ID])
 );
 GO
 CREATE INDEX [IX_Reservation_has_Table_Table_ID] ON [dbo].[Reservation_has_Table] ([Table_ID]);

@@ -46,5 +46,28 @@ public static class OrdersMapper
         };
     }
 
+    public static OrderDetail OrderDetailToEnity(OrderDetail_CreateDto orderDetail)
+    {
+        return new OrderDetail
+        {
+            Description = orderDetail.Description,
+            ProductId = orderDetail.ProductId,
+            OrderId = orderDetail.OrderId,
+        };
+    }
+
+    public static OrderDetail OrderDetailToEnity(OrderDetail_UpdateDto orderDetail)
+    {
+        return new OrderDetail
+        {
+            Id = orderDetail.Id,
+            Description = orderDetail.Description,
+            Observations = orderDetail.Observations,
+            ProductId = orderDetail.ProductId,
+            OrderId = orderDetail.OrderId,
+            OrderDetailStatusId = orderDetail.OrderDetailStatusId
+        };
+    }
+
 
 }

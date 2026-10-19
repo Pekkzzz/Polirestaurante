@@ -73,25 +73,28 @@ public class ReservationStatusService : IReservationStatusService
 
     public ReservationStatusService_Response Update(ReservationStatus_UpdateDto reservationStatus_UpdateDto)
     {
-        ReservationStatusService_Response reservationStatusService_Response = GetByID(reservationStatus_UpdateDto.Id);
-        if (!reservationStatusService_Response.Response)
+        ReservationStatusService_Response response = new ReservationStatusService_Response();
+        if (!_repository.ReservationStatusExists(reservationStatus_UpdateDto.Id))
         {
-            return reservationStatusService_Response;
+            response.Response = false;
+            response.Description = "Reservation status id cant be finded";
+            response.reservationStatus= null;
+            return response;
         }
 
         ReservationStatus reservationStatus = ReservationsMapper.ReservationStatusToEnity(reservationStatus_UpdateDto);
-
-        reservationStatusService_Response.Response = _repository.UpdateReservationStatus(reservationStatus);
-        if (!reservationStatusService_Response.Response)
+        if (!_repository.UpdateReservationStatus(reservationStatus))
         {
-            reservationStatusService_Response.reservationStatus = null;
-            reservationStatusService_Response.Description = "ReservationStatus cant be updated";
-            return reservationStatusService_Response;
+            response.Response = false;
+            response.Description = "Reservation status cant be updated by a asystem error";
+            response.reservationStatus = null;
+            return response;
         }
-        
-        reservationStatusService_Response = GetByID(reservationStatus_UpdateDto.Id);
-        reservationStatusService_Response.Description = "ReservationStatus Updated";
-        return reservationStatusService_Response;
+
+        response.Response = true;
+        response.Description = "Reservation status updated";
+        response.reservationStatus = reservationStatus;
+        return response;
     }
 
     public ReservationStatusService_Response Detele(int id)

@@ -4,6 +4,7 @@ public interface IProductTypeRepository
 {
   bool Create(ProductType ProductType);
   ProductType? Get(int id);
+  ProductType? Get(string name);
   List<ProductType> GetProductTypes();
   bool Exists(int id);
   bool Update(ProductType ProductType);

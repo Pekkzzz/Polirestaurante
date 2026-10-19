@@ -24,6 +24,11 @@ public class ProductTypeRepository : IProductTypeRepository
       return _db.ProductTypes.FirstOrDefault(rs => rs.Id == id);
    }
 
+   public ProductType? Get(string name)
+   {
+      return _db.ProductTypes.FirstOrDefault(rs => rs.Name == name);
+   }
+
    public List<ProductType> GetProductTypes()
    {
       return _db.ProductTypes.ToList();

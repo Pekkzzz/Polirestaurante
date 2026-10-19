@@ -109,6 +109,9 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+            entity.Property(e => e.Observations)
+                .HasMaxLength(255)
+                .IsUnicode(false);
             entity.Property(e => e.OrderDetailStatusId).HasColumnName("OrderDetailStatus_ID");
             entity.Property(e => e.OrderId).HasColumnName("Order_ID");
             entity.Property(e => e.ProductId).HasColumnName("Product_ID");

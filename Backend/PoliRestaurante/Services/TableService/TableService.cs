@@ -109,7 +109,7 @@ public class TableService : ITableService
             return TableService_Response;
         }
         
-        TableService_Response = GetByID(order_UpdateDto.Id);
+        TableService_Response.Response = true;
         TableService_Response.Description = "Table Updated";
         TableService_Response.Table = table;
         return TableService_Response;

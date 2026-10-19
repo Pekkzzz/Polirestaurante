@@ -43,10 +43,10 @@ public class OrderDetailStatusRepository : IOrderDetailStatusRepository
       return _db.SaveChanges() > 0;
    }
 
-    public bool Exists(int id)
-    {
-        return _db.OrderDetailStatuses.Any(rs => rs.Id == id);
-    }
+   public bool Exists(int id)
+   {
+      return _db.OrderDetailStatuses.Any(rs => rs.Id == id);
+   }
 
 
 }

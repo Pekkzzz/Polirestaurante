@@ -7,12 +7,13 @@ public static class DefaultConfiguration
     public static string DefaultOrderTypeName = DefaultOrderTypesNames[0];
     private static string[] DefaultOrderStatusNames = {"InQueue", "InPreparation", "Ready", "Delivered", "Finished"};
     public static string DefaultOrderStatusName = DefaultOrderStatusNames[0];
+    private static string[] DefaultOrderDetailStatusNames = {"InQueue", "Accepted", "Refused", "InPreparation", "Ready"};
+    public static string DefaultOrderDetailStatusName = DefaultOrderDetailStatusNames[0];
     private static string[] DefaultPaymentStatusNames = {"Pending", "Paid"};
     public static string DefaultPaymentStatusName = DefaultPaymentStatusNames[0];
     private static string[] DefaultProductTypeNames = {"General"};
     public static string DefaultProductTypeName = DefaultPaymentStatusNames[0];
-    private static string[] DefaultOrderDetailStatusNames = {"InQueue", "Accepted", "Refused", "InPreparation", "Ready"};
-    public static string DefaultOrderDetailStatusName = DefaultPaymentStatusNames[0];
+    
 
     public static void Run(
         IUserRepository userRepository, IUserRoleRepository userRoleRepository, 

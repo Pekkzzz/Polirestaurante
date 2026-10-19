@@ -7,24 +7,25 @@ public class OrderService : IOrderService
     private readonly IOrderTypeRepository _orderTypeRepository;
     private readonly IOrderStatusRepository _orderStatusRepository;
     private readonly IPaymentStatusRepository _paymentStatusRepository;
-    private readonly ITableRepository _tableRepository;
 
     //Services
     private readonly IUserService _userService;
     private readonly IUserRoleService _userRoleService;
+    private readonly ITableService _tableService;
 
     public OrderService(IOrderRepository Repository, IOrderTypeRepository orderTypeRepository, IOrderStatusRepository orderStatusRepository,
-    IPaymentStatusRepository paymentStatusRepository, ITableRepository tableRepository,
-    IUserService userService, IUserRoleService userRoleService)
+    IPaymentStatusRepository paymentStatusRepository,
+    IUserService userService, IUserRoleService userRoleService, ITableService tableService)
     {
         _repository = Repository;
         _orderTypeRepository = orderTypeRepository;
         _orderStatusRepository = orderStatusRepository;
         _paymentStatusRepository = paymentStatusRepository;
-        _tableRepository = tableRepository;
 
         _userService = userService;
         _userRoleService = userRoleService;
+        _tableService = tableService;
+
     }
 
     public OrderService_Response Create(Order_CreateDto order_CreateDto)
@@ -134,7 +135,8 @@ public class OrderService : IOrderService
 
         if (newOrder.TableId != null)
         {
-            if (!_tableRepository.TableExists((int)newOrder.TableId))
+            TableService_Response tableResponse = _tableService.GetByID((int)newOrder.TableId);
+            if (!tableResponse.Response || tableResponse.Table == null)
             {
                 response.Response = false;
                 response.Description = "Order Cant be Created: Table ID dont exists";
@@ -189,25 +191,46 @@ public class OrderService : IOrderService
 
     public OrderService_Response Update(Order_UpdateDto order_UpdateDto)
     {
-        OrderService_Response OrderService_Response = GetByID(order_UpdateDto.Id);
-        if (!OrderService_Response.Response)
+        OrderService_Response response = new OrderService_Response();
+        if (!_repository.Exists(order_UpdateDto.Id))
         {
-            return OrderService_Response;
+            response.Response = false;
+            response.Description = "Product id cant be finded";
+            response.Order = null;
+            return response;
         }
 
-        Order Order = OrdersMapper.OrderToEnity(order_UpdateDto);
-
-        OrderService_Response.Response = _repository.Update(Order);
-        if (!OrderService_Response.Response)
+        OrderType orderType = _tableService.GetByID((int)order_UpdateDto.TableId);
+        if (!table.Response)
         {
-            OrderService_Response.Order = null;
-            OrderService_Response.Description = "Order cant be updated";
-            return OrderService_Response;
+            response.Response = false;
+            response.Description = "Table id cant be finded";
+            response.Order = null;
+            return response;
         }
-        
-        OrderService_Response = GetByID(order_UpdateDto.Id);
-        OrderService_Response.Description = "Order Updated";
-        return OrderService_Response;
+
+        TableService_Response table = _tableService.GetByID((int)order_UpdateDto.TableId);
+        if (!table.Response)
+        {
+            response.Response = false;
+            response.Description = "Table id cant be finded";
+            response.Order = null;
+            return response;
+        }
+
+        Order order = OrdersMapper.OrderToEnity(order_UpdateDto);
+        if (!_repository.Update(order))
+        {
+            response.Response = false;
+            response.Description = "Order cant be updated by a system error";
+            response.Order = null;
+            return response;
+        }
+
+        response.Response = true;
+        response.Description = "Order updated";
+        response.Order = order;
+        return response;
     }
 
     public OrderService_Response Detele(int id)
@@ -242,6 +265,8 @@ public class OrderService : IOrderService
 
         
     }
+
+
 
     //----Utility----
     private OrderService_Response ComprobateOrder(Order newOrder)
