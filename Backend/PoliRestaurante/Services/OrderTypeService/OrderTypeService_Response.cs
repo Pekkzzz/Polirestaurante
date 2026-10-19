@@ -22,4 +22,5 @@ public class OrderTypeService_Response
         OrderType = null;
         OrderTypes = null;
     }
+
 }

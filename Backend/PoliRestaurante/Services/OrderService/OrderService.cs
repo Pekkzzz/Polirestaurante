@@ -4,26 +4,28 @@ using PoliRestaurante.Models.Entity;
 public class OrderService : IOrderService
 {
     private readonly IOrderRepository _repository;
-    private readonly IOrderTypeRepository _orderTypeRepository;
     private readonly IOrderStatusRepository _orderStatusRepository;
     private readonly IPaymentStatusRepository _paymentStatusRepository;
 
     //Services
+    private readonly IOrderTypeService _orderTypeService;
     private readonly IUserService _userService;
     private readonly IUserRoleService _userRoleService;
     private readonly ITableService _tableService;
 
-    public OrderService(IOrderRepository Repository, IOrderTypeRepository orderTypeRepository, IOrderStatusRepository orderStatusRepository,
+    public OrderService(IOrderRepository Repository, IOrderStatusRepository orderStatusRepository,
     IPaymentStatusRepository paymentStatusRepository,
-    IUserService userService, IUserRoleService userRoleService, ITableService tableService)
+    IOrderTypeService orderTypeService, IUserService userService, IUserRoleService userRoleService, ITableService tableService)
     {
         _repository = Repository;
-        _orderTypeRepository = orderTypeRepository;
         _orderStatusRepository = orderStatusRepository;
         _paymentStatusRepository = paymentStatusRepository;
+        _orderTypeService = orderTypeService;
 
+        _orderTypeService = orderTypeService;
         _userService = userService;
         _userRoleService = userRoleService;
+
         _tableService = tableService;
 
     }
@@ -87,19 +89,19 @@ public class OrderService : IOrderService
 
         if (order_CreateDto.OrderTypeId <= 0 )
         {
-            if (!_orderTypeRepository.Exists(DefaultConfiguration.DefaultOrderTypeName))
+            if (!_orderTypeService.GetByName(DefaultConfiguration.DefaultOrderTypeName).Response)
             {
                 response.Response = false;
                 response.Description = $"Order Cant be created: OrderType {DefaultConfiguration.DefaultOrderTypeName} is Invalid";
                 response.Order = null;
                 return response;
             }
-            oderType = _orderTypeRepository.Get(DefaultConfiguration.DefaultOrderTypeName);
+            oderType = _orderTypeService.GetByName(DefaultConfiguration.DefaultOrderTypeName).OrderType;
             
         }
         else
         {
-            oderType = _orderTypeRepository.Get(order_CreateDto.OrderTypeId);
+            oderType = _orderTypeService.GetByID(order_CreateDto.OrderTypeId).OrderType;
         }
         
         
@@ -200,11 +202,11 @@ public class OrderService : IOrderService
             return response;
         }
 
-        OrderType orderType = _tableService.GetByID((int)order_UpdateDto.TableId);
-        if (!table.Response)
+        TableService_Response orderTypeResponse = _tableService.GetByID((int)order_UpdateDto.TableId);
+        if (!orderTypeResponse.Response)
         {
             response.Response = false;
-            response.Description = "Table id cant be finded";
+            response.Description = "OrderType id cant be finded";
             response.Order = null;
             return response;
         }

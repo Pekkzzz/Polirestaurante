@@ -69,5 +69,24 @@ public static class OrdersMapper
         };
     }
 
+    public static OrderType OrderTypeToEnity(OrderType_CreateDto orderType)
+    {
+        return new OrderType
+        {
+            Name = orderType.Name,
+            Description = orderType.Description
+        };
+    }
+
+    public static OrderType OrderTypeToEnity(OrderType_UpdateDto orderType)
+    {
+        return new OrderType
+        {
+            Id = orderType.Id,  
+            Name = orderType.Name,
+            Description = orderType.Description
+        };
+    }
+
 
 }

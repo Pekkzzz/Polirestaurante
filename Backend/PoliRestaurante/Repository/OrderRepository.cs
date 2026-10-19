@@ -38,10 +38,10 @@ public class OrderRepository : IOrderRepository
       return _db.SaveChanges() > 0;
    }
 
-    public bool Exists(int id)
-    {
-        return _db.Orders.Any(rs => rs.Id == id);
-    }
+   public bool Exists(int id)
+   {
+      return _db.Orders.Any(rs => rs.Id == id);
+   }
 
 
 }

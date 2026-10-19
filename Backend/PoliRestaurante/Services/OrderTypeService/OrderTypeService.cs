@@ -1,139 +1,54 @@
-using PoliRestaurante.Models;
 using PoliRestaurante.Models.Entity;
 
 public class OrderTypeService : IOrderTypeService
 {
-    private readonly IOrderRepository _repository;
-    private readonly IOrderTypeRepository _orderTypeRepository;
-    private readonly IOrderStatusRepository _orderStatusRepository;
-    private readonly IPaymentStatusRepository _paymentStatusRepository;
+    private readonly IOrderTypeRepository _repository;
 
     //Services
-    private readonly IUserService _userService;
-    private readonly IUserRoleService _userRoleService;
-    private readonly ITableService _tableService;
 
-    public OrderTypeService(IOrderRepository Repository, IOrderTypeRepository orderTypeRepository, IOrderStatusRepository orderStatusRepository,
-    IPaymentStatusRepository paymentStatusRepository,
-    IUserService userService, IUserRoleService userRoleService, ITableService tableService)
+    public OrderTypeService(IOrderTypeRepository repository)
     {
-        _repository = Repository;
-        _orderTypeRepository = orderTypeRepository;
-        _orderStatusRepository = orderStatusRepository;
-        _paymentStatusRepository = paymentStatusRepository;
-
-        _userService = userService;
-        _userRoleService = userRoleService;
-        _tableService = tableService;
+        _repository = repository;
 
     }
 
-    public OrderService_Response Create(OrderType_CreateDto OrderType_CreateDto)
+    public OrderTypeService_Response Create(OrderType_CreateDto OrderType_CreateDto)
     {
-        OrderService_Response response = new OrderService_Response();
+        OrderTypeService_Response response = new OrderTypeService_Response();
         OrderType newOrderType = OrdersMapper.OrderTypeToEnity(OrderType_CreateDto);
-        response = ComprobateOrder(newOrderType);
-        if (!response.Response)
-        {
-            return response;
-        }
-
-        newOrder.CreationDate = DateTime.Now;
-        OrderType? oderType;
-        OrderStatus? orderStatus;
-        PaymentStatus? paymentStatus;
-
-        if (OrderType_CreateDto.OrderTypeId <= 0 )
-        {
-            if (!_orderTypeRepository.Exists(DefaultConfiguration.DefaultOrderTypeName))
-            {
-                response.Response = false;
-                response.Description = $"Order Cant be created: OrderType {DefaultConfiguration.DefaultOrderTypeName} is Invalid";
-                response.Order = null;
-                return response;
-            }
-            oderType = _orderTypeRepository.Get(DefaultConfiguration.DefaultOrderTypeName);
-            
-        }
-        else
-        {
-            oderType = _orderTypeRepository.Get(OrderType_CreateDto.OrderTypeId);
-        }
         
         
-        if (!_orderStatusRepository.Exists(DefaultConfiguration.DefaultOrderStatusName))
+        if (_repository.Exists(newOrderType.Name))
         {
             response.Response = false;
-            response.Description = "Order Cant be created: OrderStatus Invalid";
-            response.Order = null;
+            response.Description = "Order Already Exists";
+            response.OrderType = null;
             return response;
         }
-        orderStatus = _orderStatusRepository.Get(DefaultConfiguration.DefaultOrderStatusName);
-        
-        if (!_paymentStatusRepository.Exists(DefaultConfiguration.DefaultPaymentStatusName))
-        {
-            response.Response = false;
-            response.Description = "Order Cant be created: PaymentSTATUS Invalid";
-            response.Order = null;
-            return response;
-        }
-        paymentStatus = _paymentStatusRepository.Get(DefaultConfiguration.DefaultPaymentStatusName);
 
-        if (oderType == null || orderStatus == null || paymentStatus == null)
-        {
-            response.Response = false;
-            response.Description = "Order Cant be created: Any OrderType Or OrderStatus or PaymentStatus is null";
-            response.Order = null;
-            return response;
-        }
-        newOrder.OrderTypeId = oderType.Id;
-        newOrder.OrderStatusId = orderStatus.Id;
-        newOrder.PaymentStatusId = paymentStatus.Id;
-
-
-        if (newOrder.TableId != null)
-        {
-            TableService_Response tableResponse = _tableService.GetByID((int)newOrder.TableId);
-            if (!tableResponse.Response || tableResponse.Table == null)
-            {
-                response.Response = false;
-                response.Description = "Order Cant be Created: Table ID dont exists";
-                response.Order = null;
-                return response;
-            }
-        }
-        
-
-        if (_repository.Create(newOrder))
+        if(_repository.Create(newOrderType))
         {
             response.Response = true;
-            response.Description = "Order Created Succesfully";
-            response.Order = newOrder;
+            response.Description = "Order Type Created";
+            response.OrderType = newOrderType;
             return response;
         }
         else
         {
             response.Response = false;
-            response.Description = "Internal Error: Somethng is wrong when system try to create a new order";
-            response.Order = null;
+            response.Description = "Order Type Cant Be Created by a System error";
+            response.OrderType = null;
             return response;
         }
-        
 
     }
 
-    public OrderService_Response GetByID(int id)
+    public OrderTypeService_Response GetByID(int id)
     {
-        OrderService_Response response = new OrderService_Response();
+        OrderTypeService_Response response = new OrderTypeService_Response();
 
-        if (id <= 0)
-        {
-            response.Description = "Order id cant be negative or 0";
-            return response;
-        }
-
-        Order? Order = _repository.Get(id);
-        if (Order == null)
+        OrderType? OrderType = _repository.Get(id);
+        if (OrderType == null)
         {
             response.Description = "Order id cant be finded";
             return response;
@@ -142,72 +57,87 @@ public class OrderTypeService : IOrderTypeService
         {
             response.Response = true;
             response.Description = "Order Finded";
-            response.Order = Order;
+            response.OrderType = OrderType;
             return response;
         }
     }
 
-    public OrderService_Response Update(OrderType_UpdateDto OrderType_UpdateDto)
+    public OrderTypeService_Response GetByName(string name)
     {
-        OrderService_Response response = new OrderService_Response();
-        if (!_repository.Exists(OrderType_UpdateDto.Id))
+        OrderTypeService_Response response = new OrderTypeService_Response();
+
+        OrderType? OrderType = _repository.Get(name);
+        if (OrderType == null)
         {
-            response.Response = false;
-            response.Description = "Product id cant be finded";
-            response.Order = null;
+            response.Description = "Order name cant be finded";
             return response;
-        }
-
-        TableService_Response table = _tableService.GetByID((int)OrderType_UpdateDto.TableId);
-        if (!table.Response)
-        {
-            response.Response = false;
-            response.Description = "Table id cant be finded";
-            response.Order = null;
-            return response;
-        }
-
-        Order order = OrdersMapper.OrderToEnity(OrderType_UpdateDto);
-        if (!_repository.Update(order))
-        {
-            response.Response = false;
-            response.Description = "Order cant be updated by a system error";
-            response.Order = null;
-            return response;
-        }
-
-        response.Response = true;
-        response.Description = "Order updated";
-        response.Order = order;
-        return response;
-    }
-
-    public OrderService_Response Detele(int id)
-    {
-        OrderService_Response OrderService_Response = GetByID(id);
-        if (!OrderService_Response.Response)
-        {
-            return OrderService_Response;
-        }
-        if (OrderService_Response.Order == null)
-        {
-            OrderService_Response.Response = false;
-            OrderService_Response.Description = "Something is wrong";
-            OrderService_Response.Order = null;
-            return OrderService_Response;
         }
         else
         {
-            OrderService_Response.Response = _repository.Delete(OrderService_Response.Order);
-            if (!OrderService_Response.Response)
+            response.Response = true;
+            response.Description = "Order Finded";
+            response.OrderType = OrderType;
+            return response;
+        }
+    }
+
+    public OrderTypeService_Response Update(OrderType_UpdateDto OrderType_UpdateDto)
+    {
+        OrderTypeService_Response response = new OrderTypeService_Response();
+        if (!_repository.Exists(OrderType_UpdateDto.Id))
+        {
+            response.Response = false;
+            response.Description = "Order Type id cant be finded";
+            response.OrderType = null;
+            return response;
+        }
+
+        OrderType OrderType = OrdersMapper.OrderTypeToEnity(OrderType_UpdateDto);
+
+        if(_repository.Update(OrderType))
+        {
+            response.Response = true;
+            response.Description = "Order Type updated";
+            response.OrderType = OrderType;
+            return response;
+        }
+        else
+        {
+            response.Response = false;
+            response.Description = "Order Type cant be updated by a system error";
+            response.OrderType = null;
+            return response;
+        }
+        
+    }
+
+    public OrderTypeService_Response Detele(int id)
+    {
+        OrderTypeService_Response OrderTypeService_Response = GetByID(id);
+        if (!OrderTypeService_Response.Response)
+        {
+            return OrderTypeService_Response;
+        }
+
+        if (OrderTypeService_Response.OrderType == null)
+        {
+            OrderTypeService_Response.Response = false;
+            OrderTypeService_Response.Description = "Something is wrong";
+            OrderTypeService_Response.OrderType = null;
+            return OrderTypeService_Response;
+        }
+        else
+        {
+            OrderTypeService_Response.Response = _repository.Delete(OrderTypeService_Response.OrderType);
+            if (!OrderTypeService_Response.Response)
             {
-                OrderService_Response.Description = "User Cant Be Deleted";
-                OrderService_Response.Order = null;
-                return OrderService_Response;
+                OrderTypeService_Response.Description = "User Cant Be Deleted";
+                OrderTypeService_Response.OrderType = null;
+                return OrderTypeService_Response;
             }
             else
             {
-                return OrderService_Response;
+                return OrderTypeService_Response;
             }
             
         }
@@ -218,9 +148,9 @@ public class OrderTypeService : IOrderTypeService
 
 
     //----Utility----
-    private OrderService_Response ComprobateOrder(Order newOrder)
+    private OrderTypeService_Response ComprobateOrder(OrderType newOrder)
     {
         
-        return new OrderService_Response(true, "User Role is available", null);
+        return new OrderTypeService_Response(true, "User Role is available", newOrder, null);
     }
 }
