@@ -3,15 +3,18 @@ using PoliRestaurante.Models.Entity;
 public class OrderDetailService : IOrderDetailService
 {
     private readonly IOrderDetailRepository _repository;
+    private readonly IOrderStatusRepository _orderStatusRepository;
 
     //Services
     private readonly IProductService _productService;
     private readonly IOrderService _orderService;
+    
 
-    public OrderDetailService(IOrderDetailRepository Repository, 
+    public OrderDetailService(IOrderDetailRepository Repository, IOrderStatusRepository orderStatusRepository, 
     IProductService productService, IOrderService orderService)
     {
         _repository = Repository;
+        _orderStatusRepository = orderStatusRepository;
         _productService = productService;
         _orderService = orderService;
     }
@@ -33,6 +36,7 @@ public class OrderDetailService : IOrderDetailService
             response.Response = false;
             response.Description = productService_Response.Description;
             response.OrderDetail = null;
+            return response;
         }
 
         OrderService_Response orderService_Response = _orderService.GetByID(newOrderDetail.OrderId);
@@ -41,9 +45,33 @@ public class OrderDetailService : IOrderDetailService
             response.Response = false;
             response.Description = orderService_Response.Description;
             response.OrderDetail = null;
+            return response;
         }
 
-        return response;
+        OrderStatus? orderStatus = _orderStatusRepository.Get(newOrderDetail.OrderDetailStatusId);
+
+        if (orderStatus == null)
+        {
+            response.Response = false;
+            response.Description = "Order Status cant be founded";
+            response.OrderDetail = null;
+            return response;
+        }
+
+        if (_repository.Create(newOrderDetail))
+        {
+            response.Response = true;
+            response.Description = "Order Detail Created";
+            response.OrderDetail = null;
+            return response;
+        }
+        else
+        {
+            response.Response = false;
+            response.Description = "Order Detail cant be created by system error";
+            response.OrderDetail = null;
+            return response;
+        }
         
 
     }
@@ -52,15 +80,10 @@ public class OrderDetailService : IOrderDetailService
     {
         OrderDetailService_Response response = new OrderDetailService_Response();
 
-        if (id <= 0)
-        {
-            response.Description = "OrderDetail id cant be negative or 0";
-            return response;
-        }
-
         OrderDetail? OrderDetail = _repository.Get(id);
         if (OrderDetail == null)
         {
+            response.Response = false;
             response.Description = "OrderDetail id cant be finded";
             return response;
         }
@@ -84,22 +107,61 @@ public class OrderDetailService : IOrderDetailService
             return response;
         }
 
-        OrderDetail orderDetail = OrdersMapper.OrderDetailToEnity(order_UpdateDto);
-        if (!_repository.Update(orderDetail))
+        ProductService_Response productService_Response = _productService.GetByID(order_UpdateDto.ProductId);
+        if (!productService_Response.Response)
         {
             response.Response = false;
-            response.Description = "Order cant be updated by a system error";
+            response.Description = productService_Response.Description;
             response.OrderDetail = null;
             return response;
         }
 
-        response.Response = true;
-        response.Description = "Order updated";
-        response.OrderDetail = orderDetail;
-        return response;
+        OrderService_Response orderService_Response = _orderService.GetByID(order_UpdateDto.OrderId);
+        if (!orderService_Response.Response)
+        {
+            response.Response = false;
+            response.Description = orderService_Response.Description;
+            response.OrderDetail = null;
+            return response;
+        }
+
+        OrderStatus? orderStatus = _orderStatusRepository.Get(order_UpdateDto.OrderDetailStatusId);
+
+        if (orderStatus == null)
+        {
+            response.Response = false;
+            response.Description = "Order Status cant be founded";
+            response.OrderDetail = null;
+            return response;
+        }
+
+        OrderDetail orderDetail = OrdersMapper.OrderDetailToEnity(order_UpdateDto);
+        response = ComprobateOrderDetail(orderDetail);
+        if (!response.Response)
+        {
+            response.Response = false;
+            response.OrderDetail = null;
+            return response;
+        }
+
+        if (_repository.Update(orderDetail))
+        {
+            response.Response = true;
+            response.Description = "Order Updated";
+            response.OrderDetail = orderDetail;
+            return response;
+        }
+        else
+        {
+            response.Response = false;
+            response.Description = "Order cant be Updated";
+            response.OrderDetail = null;
+            return response;
+        }
+
     }
 
-    public OrderDetailService_Response Detele(int id)
+    public OrderDetailService_Response Delete(int id)
     {
         OrderDetailService_Response OrderDetailService_Response = GetByID(id);
         if (!OrderDetailService_Response.Response)
@@ -135,7 +197,10 @@ public class OrderDetailService : IOrderDetailService
     //----Utility----
     private OrderDetailService_Response ComprobateOrderDetail(OrderDetail newOrderDetail)
     {
-        
+        if (string.IsNullOrEmpty(newOrderDetail.Description))
+        {
+            return new OrderDetailService_Response(true, "Description is required", null);
+        }
         return new OrderDetailService_Response(true, "User Role is available", null);
     }
 }

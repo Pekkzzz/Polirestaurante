@@ -125,7 +125,7 @@ public class UserRoleService : IUserRoleService
         return response;
     }
 
-    public UserRoleService_Response Detele(int id)
+    public UserRoleService_Response Delete(int id)
     {
         UserRoleService_Response response = GetByID(id);
         if (!response.Response || response.userRole ==null)

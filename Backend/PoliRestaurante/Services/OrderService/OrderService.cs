@@ -235,7 +235,7 @@ public class OrderService : IOrderService
         return response;
     }
 
-    public OrderService_Response Detele(int id)
+    public OrderService_Response Delete(int id)
     {
         OrderService_Response OrderService_Response = GetByID(id);
         if (!OrderService_Response.Response)

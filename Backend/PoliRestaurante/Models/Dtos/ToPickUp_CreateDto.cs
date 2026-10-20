@@ -1,4 +1,4 @@
-using System.componentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 public class ToPickUp_CreateDto
 {
     [Required(ErrorMessage = "Address is Required")]

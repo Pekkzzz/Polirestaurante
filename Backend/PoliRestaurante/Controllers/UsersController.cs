@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApiEcommerce.Controllers
 {
-  [Route("api/[controller]")]
+  [Route("api/[controller]")] // EVAN: Requeriment RF-12
   [ApiController]
   public class UsersController : ControllerBase
   {
@@ -86,7 +86,7 @@ namespace ApiEcommerce.Controllers
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult DeleteUser(int id)
     {
-      UserService_Response serviceResponse = _service.Detele(id);
+      UserService_Response serviceResponse = _service.Delete(id);
       if (!serviceResponse.Response)
       {
         ModelState.AddModelError("CustomError", serviceResponse.Description);

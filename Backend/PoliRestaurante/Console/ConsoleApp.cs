@@ -1,7 +1,7 @@
 public static class ConsoleApp
 {
     public static void Run(
-        IUserRoleRepository userRoleRepository, IUserRepository userRepository, IReservationStatusRepository reservationStatusRepository,
+        IUserRoleRepository userRoleRepository, IUserService userService, IReservationStatusRepository reservationStatusRepository,
         ITableRepository tableRepository
         )
     {
@@ -34,7 +34,7 @@ public static class ConsoleApp
                     break;
 
                 case "2":
-                    UserMenu.UsersMenu(userRepository);
+                    UserMenu.UsersMenu(userService);
                     break;
 
                 case "3":

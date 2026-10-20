@@ -16,7 +16,7 @@ public static class DefaultConfiguration
     
 
     public static void Run(
-        IUserRepository userRepository, IUserRoleRepository userRoleRepository, 
+        IUserService userService, IUserRoleRepository userRoleRepository, 
         IReservationStatusRepository reservationStatusRepository,
         ITableRepository tableRepository, 
         IOrderRepository orderRepository, IOrderTypeRepository orderTypeRepository, IOrderStatusRepository orderStatusRepository, IPaymentStatusRepository paymentStatusRepository
@@ -24,7 +24,7 @@ public static class DefaultConfiguration
         )
     {
         bool running = (
-                DefaultUserConfigs(userRoleRepository, userRepository) &&
+                DefaultUserConfigs(userRoleRepository, userService) &&
                 DefaultOrderConfigs(orderTypeRepository, orderStatusRepository, paymentStatusRepository)
                 );
             
@@ -50,7 +50,7 @@ public static class DefaultConfiguration
                     break;
 
                 case "2":
-                    UserMenu.UsersMenu(userRepository);
+                    UserMenu.UsersMenu(userService);
                     Console.WriteLine("Error crítico. Cerrando programa...");
                     Environment.Exit(1); // 1 indica que terminó con error
                     break;
@@ -67,7 +67,7 @@ public static class DefaultConfiguration
 
     }
 
-    public static bool DefaultUserConfigs(IUserRoleRepository userRoleRepository, IUserRepository userRepository)
+    public static bool DefaultUserConfigs(IUserRoleRepository userRoleRepository, IUserService userService)
     {
         // User Roles
         if (!userRoleRepository.UserRoleExists(DefaulUserRoleName))

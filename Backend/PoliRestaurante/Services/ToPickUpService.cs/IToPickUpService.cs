@@ -1,10 +1,9 @@
-using Polirestaurante.Models;
+using PoliRestaurante.Models.Entity;
 
 public interface IToPickUpService
 {
-    public ToPickUpService_Response CreateToPickUp(ToPickUp toPickUp);
-    public ToPickUpService_Response GetToPickUp(int id);
-    public ToPickUpService_Response GetToPickUp(string name);
-    public ToPickUpService_Response UpdateToPickUp(ToPickUp toPickUp);
-    public ToPickUpService_Response DeleteToPickUp(int id);
+    public ToPickUpService_Response Create(ToPickUp_CreateDto toPickUp);
+    public ToPickUpService_Response GetByID(int id);
+    public ToPickUpService_Response Update(ToPickUp_UpdateDto toPickUp);
+    public ToPickUpService_Response Delete(int id);
 }

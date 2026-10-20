@@ -92,6 +92,25 @@ public class UserService : IUserService
         }
     }
 
+    public UserService_Response GetByName(string name)
+    {
+        UserService_Response response = new UserService_Response();
+
+        User? user = _repository.GetUser(name);
+        if (user == null)
+        {
+            response.Description = "User name cant be finded";
+            return response;
+        }
+        else
+        {
+            response.Response = true;
+            response.Description = "User not Found";
+            response.user = user;
+            return response;
+        }
+    }
+
     public UserService_Response Save()
     {
         throw new NotImplementedException();
@@ -132,7 +151,7 @@ public class UserService : IUserService
         return userService_Response;
     }
 
-    public UserService_Response Detele(int id)
+    public UserService_Response Delete(int id)
     {
         UserService_Response response = GetByID(id);
 

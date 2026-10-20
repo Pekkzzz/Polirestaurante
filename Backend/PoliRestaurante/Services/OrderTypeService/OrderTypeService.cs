@@ -111,7 +111,7 @@ public class OrderTypeService : IOrderTypeService
         
     }
 
-    public OrderTypeService_Response Detele(int id)
+    public OrderTypeService_Response Delete(int id)
     {
         OrderTypeService_Response OrderTypeService_Response = GetByID(id);
         if (!OrderTypeService_Response.Response)

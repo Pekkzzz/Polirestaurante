@@ -159,7 +159,7 @@ public class ProductTypeService : IProductTypeService
         return ProductTypeService_Response;
     }
 
-    public ProductTypeService_Response Detele(int id)
+    public ProductTypeService_Response Delete(int id)
     {
         ProductTypeService_Response response = GetByID(id);
         if (!response.Response || response.productType == null)

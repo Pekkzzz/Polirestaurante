@@ -1,4 +1,4 @@
-public class ToPickUp_Dto
+public class ToPickUp_UpdateDto
 {
     public int Id { get; set; }
 

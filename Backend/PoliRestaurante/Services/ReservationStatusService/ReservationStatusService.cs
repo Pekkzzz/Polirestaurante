@@ -97,7 +97,7 @@ public class ReservationStatusService : IReservationStatusService
         return response;
     }
 
-    public ReservationStatusService_Response Detele(int id)
+    public ReservationStatusService_Response Delete(int id)
     {
         ReservationStatusService_Response reservationStatusService_Response = GetByID(id);
         if (!reservationStatusService_Response.Response)

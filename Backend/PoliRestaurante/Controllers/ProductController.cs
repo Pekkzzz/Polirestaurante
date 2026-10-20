@@ -4,7 +4,7 @@ using PoliRestaurante.Models.Entity;
 
 namespace ApiEcommerce.Controllers
 {
-  [Route("api/[controller]")]
+  [Route("api/[controller]")] // EVAN: Requeriment RF-10
   [ApiController]
   public class ProductController : ControllerBase
   {
@@ -137,7 +137,7 @@ namespace ApiEcommerce.Controllers
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult DeleteProduct(int id)
     {
-      ProductService_Response serviceResponse = _service.Detele(id);
+      ProductService_Response serviceResponse = _service.Delete(id);
       if (!serviceResponse.Response)
       {
         ModelState.AddModelError("CustomError", serviceResponse.Description);
@@ -270,7 +270,7 @@ namespace ApiEcommerce.Controllers
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult DeleteProductType(int id)
     {
-      ProductTypeService_Response serviceResponse = _productTypeService.Detele(id);
+      ProductTypeService_Response serviceResponse = _productTypeService.Delete(id);
       if (!serviceResponse.Response)
       {
         ModelState.AddModelError("CustomError", serviceResponse.Description);

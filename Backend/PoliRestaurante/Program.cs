@@ -79,14 +79,16 @@ using (var scope = app.Services.CreateScope())
     var orderStatusRepository = scope.ServiceProvider.GetRequiredService<IOrderStatusRepository>();
     var paymentStatusRepository = scope.ServiceProvider.GetRequiredService<IPaymentStatusRepository>();
 
+    var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+
     //Default Config
     DefaultConfiguration.Run(
-        userRepository, userRoleRepository,
+        userService, userRoleRepository,
         reservationStatusRepository,
         tableRepository,
         orderRepository, orderTypeRepository, orderStatusRepository, paymentStatusRepository);
     //Menu Console
-    ConsoleApp.Run(userRoleRepository, userRepository, reservationStatusRepository, tableRepository);
+    ConsoleApp.Run(userRoleRepository, userService, reservationStatusRepository, tableRepository);
 }
 
 app.Run();

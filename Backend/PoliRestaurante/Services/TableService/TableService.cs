@@ -115,7 +115,7 @@ public class TableService : ITableService
         return TableService_Response;
     }
 
-    public TableService_Response Detele(int id)
+    public TableService_Response Delete(int id)
     {
         TableService_Response TableService_Response = GetByID(id);
         if (!TableService_Response.Response)

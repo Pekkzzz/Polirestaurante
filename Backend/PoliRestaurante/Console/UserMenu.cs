@@ -2,7 +2,7 @@ using PoliRestaurante.Models.Entity;
 
 public static class UserMenu
 {
-    public static void UsersMenu(IUserRepository userRepository)
+    public static void UsersMenu(IUserService userService)
     {
         bool running = true;
 
@@ -29,19 +29,19 @@ public static class UserMenu
             switch (option)
             {
                 case "1":
-                    UsersMenu_CreateUser(userRepository);
+                    UsersMenu_CreateUser(userService);
                     break;
 
                 case "2":
-                    UsersMenu_GetUser(userRepository);
+                    UsersMenu_GetUser(userService);
                     break;
 
                 case "3":
-                    UsersMenu_UpdateUser(userRepository);
+                    UsersMenu_UpdateUser(userService);
                     break;
 
                 case "4":
-                    UsersMenu_DeleteUser(userRepository);
+                    UsersMenu_DeleteUser(userService);
                     break;
 
                 case "0":
@@ -56,7 +56,7 @@ public static class UserMenu
         }
     }
 
-    public static void UsersMenu_CreateUser(IUserRepository userRepository)
+    public static void UsersMenu_CreateUser(IUserService userService)
     {
         Console.WriteLine("========== CREATE USER ROLE ==========");
         Console.WriteLine();
@@ -73,28 +73,21 @@ public static class UserMenu
         Console.Write("PasswordHash: ");
         string passwordhash = Console.ReadLine() ?? "";
 
-        Console.Write("UserRoleID: ");
-        int userRoleID = int.Parse(Console.ReadLine()!);
 
-
-        User user = new User
+        User_CreateDto user_createDto = new User_CreateDto
         {
             Username = username,
             Name = name,
             Email = email,
-            PasswordHash = passwordhash,
-            CreationDate = DateTime.Now,
-            IsDeleted = false,
-            DeletedDate = null,
-            UserRoleId = userRoleID
+            Password = passwordhash
 
         };
 
-        var response = userRepository.CreateUser(user);
+        UserService_Response response = userService.Create(user_createDto);
 
         Console.WriteLine();
 
-        if (response)
+        if (response.Response)
         {
             Console.WriteLine("✅ User Creado");
         }
@@ -106,7 +99,7 @@ public static class UserMenu
         ConsoleApp.Pause();
     }
 
-    public static void UsersMenu_GetUser(IUserRepository userRepository)
+    public static void UsersMenu_GetUser(IUserService userService)
     {
         Console.WriteLine("========== GET USER ==========");
         Console.WriteLine();
@@ -124,22 +117,22 @@ public static class UserMenu
                 return;
             }
 
-            var getUserResponse = userRepository.GetUser(id);
+            var getUserResponse = userService.GetByID(id);
 
             Console.WriteLine();
 
             if (getUserResponse != null)
             {
                 Console.WriteLine("✅ User Role encontrado.");
-                Console.WriteLine($"ID: {getUserResponse.Id}");
-                Console.WriteLine($"Username: {getUserResponse.Username}");
-                Console.WriteLine($"Name: {getUserResponse.Name}");
-                Console.WriteLine($"Email: {getUserResponse.Email}");
-                Console.WriteLine($"PasswordHash: {getUserResponse.PasswordHash}");
-                Console.WriteLine($"CreationDate: {getUserResponse.CreationDate}");
-                Console.WriteLine($"IsDeleted: {getUserResponse.IsDeleted}");
-                Console.WriteLine($"DeletedDate: {getUserResponse.DeletedDate}");
-                Console.WriteLine($"UserRoleID: {getUserResponse.UserRoleId}");
+                Console.WriteLine($"ID: {getUserResponse.user}");
+                Console.WriteLine($"Username: {getUserResponse.user.Username}");
+                Console.WriteLine($"Name: {getUserResponse.user.Name}");
+                Console.WriteLine($"Email: {getUserResponse.user.Email}");
+                Console.WriteLine($"PasswordHash: {getUserResponse.user.PasswordHash}");
+                Console.WriteLine($"CreationDate: {getUserResponse.user.CreationDate}");
+                Console.WriteLine($"IsDeleted: {getUserResponse.user.IsDeleted}");
+                Console.WriteLine($"DeletedDate: {getUserResponse.user.DeletedDate}");
+                Console.WriteLine($"UserRoleID: {getUserResponse.user.UserRoleId}");
             }
             else
             {
@@ -159,22 +152,22 @@ public static class UserMenu
                 return;
             }
 
-            var getUserResponse = userRepository.GetUser(username);
+            UserService_Response getUserResponse = userService.GetByName(username);
 
             Console.WriteLine();
 
             if (getUserResponse != null)
             {
                 Console.WriteLine("✅ User Role encontrado.");
-                Console.WriteLine($"ID: {getUserResponse.Id}");
-                Console.WriteLine($"Username: {getUserResponse.Username}");
-                Console.WriteLine($"Name: {getUserResponse.Name}");
-                Console.WriteLine($"Email: {getUserResponse.Email}");
-                Console.WriteLine($"PasswordHash: {getUserResponse.PasswordHash}");
-                Console.WriteLine($"CreationDate: {getUserResponse.CreationDate}");
-                Console.WriteLine($"IsDeleted: {getUserResponse.IsDeleted}");
-                Console.WriteLine($"DeletedDate: {getUserResponse.DeletedDate}");
-                Console.WriteLine($"UserRoleID: {getUserResponse.UserRoleId}");
+                Console.WriteLine($"ID: {getUserResponse.user.Id}");
+                Console.WriteLine($"Username: {getUserResponse.user.Username}");
+                Console.WriteLine($"Name: {getUserResponse.user.Name}");
+                Console.WriteLine($"Email: {getUserResponse.user.Email}");
+                Console.WriteLine($"PasswordHash: {getUserResponse.user.PasswordHash}");
+                Console.WriteLine($"CreationDate: {getUserResponse.user.CreationDate}");
+                Console.WriteLine($"IsDeleted: {getUserResponse.user.IsDeleted}");
+                Console.WriteLine($"DeletedDate: {getUserResponse.user.DeletedDate}");
+                Console.WriteLine($"UserRoleID: {getUserResponse.user.UserRoleId}");
             }
             else
             {
@@ -189,7 +182,7 @@ public static class UserMenu
         }
     }
 
-    public static void UsersMenu_UpdateUser(IUserRepository userRepository)
+    public static void UsersMenu_UpdateUser(IUserService userService)
     {
         Console.WriteLine("========== UPDATE USER ==========");
         Console.WriteLine();
@@ -214,24 +207,20 @@ public static class UserMenu
         Console.Write("UserRoleID: ");
         int userRoleID = int.Parse(Console.ReadLine()!);
 
-        User user = new User
+        User_UpdateDto user = new User_UpdateDto
         {
             Username = username,
             Name = name,
             Email = email,
-            PasswordHash = passwordhash,
-            CreationDate = DateTime.Now,
-            IsDeleted = false,
-            DeletedDate = null,
-            UserRoleId = userRoleID
+            Password = passwordhash
 
         };
 
-        var response = userRepository.UpdateUser(user);
+        UserService_Response response = userService.Update(user);
 
         Console.WriteLine();
 
-        if (response)
+        if (response.Response)
         {
             Console.WriteLine("✅ User Actualizado");
         }
@@ -243,7 +232,7 @@ public static class UserMenu
         ConsoleApp.Pause();
     }
 
-    public static void UsersMenu_DeleteUser(IUserRepository userRepository)
+    public static void UsersMenu_DeleteUser(IUserService userService)
     {
         Console.WriteLine("========== DELETE USER ROLE ==========");
         Console.WriteLine();
@@ -253,26 +242,15 @@ public static class UserMenu
         
         int id = numero;
 
-        User userToEliminate = userRepository.GetUser(id);
-        if (userToEliminate == null)
+        UserService_Response userToEliminate = userService.GetByID(id);
+        if (!userToEliminate.Response)
         {
             Console.WriteLine("❌ User role cant be finded");
         }
         else
         {
-            var response = userRepository.DeleteUser(userToEliminate);
+            Console.WriteLine("✅ User Eliminado");
 
-            Console.WriteLine();
-
-            if (response)
-            {
-                Console.WriteLine("✅ User Eliminado");
-            }
-            else
-            {
-                Console.WriteLine("❌ No se pudo actualizar el User.");
-                
-            }
         }
         
         ConsoleApp.Pause();
