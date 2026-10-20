@@ -44,6 +44,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<ToPickUp> ToPickUps { get; set; }
 
+    public virtual DbSet<PickupStatus> PickUpStatuses { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
