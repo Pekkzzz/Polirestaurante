@@ -35,12 +35,12 @@ namespace ApiEcommerce.Controllers
       return Ok(order);
     }
 
-    [HttpGet("Queue", Name = "GetOrderQueue")]
+    [HttpGet()]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult GetQueue()
+    public IActionResult GetAll()
     {
-        OrderQueueService_Response serviceResponse = _service.GetQueue();
+        OrderService_Response serviceResponse = _service.GetAll();
 
         if (!serviceResponse.Response || serviceResponse.Orders == null)
         {

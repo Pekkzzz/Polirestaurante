@@ -149,11 +149,11 @@ public class OrderService : IOrderService
         }
     }
     
-    public OrderQueueService_Response GetQueue()
+    public OrderService_Response GetAll()
     {
-        OrderQueueService_Response response = new OrderQueueService_Response();
+        OrderService_Response response = new OrderService_Response();
 
-        List<Order> orders = _repository.GetQueue();
+        List<Order> orders = _repository.GetAll();
 
         response.Response = true;
         response.Description = "Order queue retrieved successfully";

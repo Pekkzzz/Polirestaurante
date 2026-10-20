@@ -5,6 +5,7 @@ public class OrderService_Response
     public bool Response;
     public string Description;
     public Order? Order;
+    public List<Order>? Orders;
 
     public OrderService_Response(bool response, string description, Order? OrderObject)
     {

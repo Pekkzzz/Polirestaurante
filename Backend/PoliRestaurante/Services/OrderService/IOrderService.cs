@@ -6,7 +6,5 @@ public interface IOrderService
     public OrderService_Response Create(Order_CreateDto newOrder);
     public OrderService_Response Update(Order_UpdateDto Order_UpdateDto);
     public OrderService_Response Delete(int id);
-
-    // Cola de pedidos
-    OrderQueueService_Response GetQueue();
+    public OrderService_Response GetAll();
 }

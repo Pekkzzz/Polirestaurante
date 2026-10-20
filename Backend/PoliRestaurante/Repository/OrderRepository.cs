@@ -24,6 +24,8 @@ public class OrderRepository : IOrderRepository
       return _db.Orders.FirstOrDefault(rs => rs.Id == id);
    }
 
+   
+
    public bool Update(Order Order)
    {
       _db.Orders.Update(Order);
@@ -43,7 +45,7 @@ public class OrderRepository : IOrderRepository
       return _db.Orders.Any(rs => rs.Id == id);
    }
 
-   public List<Order> GetQueue()
+   public List<Order> GetAll()
    {
       return _db.Orders.ToList();
    }
