@@ -33,48 +33,6 @@ public class OrderService : IOrderService
     public OrderService_Response Create(Order_CreateDto order_CreateDto)
     {
         OrderService_Response response = new OrderService_Response();
-        User_LoginDto user_LoginDto = new User_LoginDto()
-        {
-            Username = order_CreateDto.username,
-            Password = order_CreateDto.Password
-        };
-        UserService_Response userService_Response = _userService.ComprobateUser(user_LoginDto);
-        if (!userService_Response.Response || userService_Response.user == null)
-        {
-            response = new OrderService_Response()
-            {
-                Response = false,
-                Description = "Something went wrong with user comprobation",
-                Order = null
-            };
-            return response;
-        }
-        
-        UserRoleService_Response userRoleService_Response =  _userRoleService.GetByID(userService_Response.user.UserRoleId);
-        UserRole? userRole = userRoleService_Response.userRole;
-        if (!userRoleService_Response.Response || userRole == null)
-        {
-            response = new OrderService_Response()
-            {
-                Response = false,
-                Description = "Something went wrong with user role comprobation",
-                Order = null
-            };
-            return response;
-        }
-        
-        if (!userRole.CanEditOrders || !userRole.IsOwner)
-        {
-            response = new OrderService_Response()
-            {
-                Response = false,
-                Description = "User has not the neccesary permission level",
-                Order = null
-            };
-            return response;
-        }
-
-
         Order newOrder = OrdersMapper.OrderToEnity(order_CreateDto);
         response = ComprobateOrder(newOrder);
         if (!response.Response)
