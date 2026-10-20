@@ -5,7 +5,7 @@ using PoliRestaurante.Models;
 
 namespace ApiEcommerce.Controllers
 {
-  [Route("api/[controller]")]
+  [Route("api/[controller]")]  // Diego RF - 17
   [ApiController]
   public class ReservationStatusController : ControllerBase
   {

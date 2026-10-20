@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApiEcommerce.Controllers
 {
-  [Route("api/[controller]")] // EVAN: Requeriment RF-12, MARIANA_ Requeriment RF-16
+  [Route("api/[controller]")] // EVAN: Requeriment RF-12, MARIANA_ Requeriment RF-16, Diego RF - 15
   [ApiController]
   public class UsersController : ControllerBase
   {
