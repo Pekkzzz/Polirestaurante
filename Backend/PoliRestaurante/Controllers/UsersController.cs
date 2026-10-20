@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApiEcommerce.Controllers
 {
-  [Route("api/[controller]")] // EVAN: Requeriment RF-12
+  [Route("api/[controller]")] // EVAN: Requeriment RF-12, MARIANA_ Requeriment RF-16
   [ApiController]
   public class UsersController : ControllerBase
   {
@@ -84,7 +84,7 @@ namespace ApiEcommerce.Controllers
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult DeleteUser(int id)
+    public IActionResult DeleteUser(int id) 
     {
       UserService_Response serviceResponse = _service.Delete(id);
       if (!serviceResponse.Response)
