@@ -35,6 +35,26 @@ namespace ApiEcommerce.Controllers
       return Ok(order);
     }
 
+    [HttpGet("Queue", Name = "GetOrderQueue")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IActionResult GetQueue()
+    {
+        OrderQueueService_Response serviceResponse = _service.GetQueue();
+
+        if (!serviceResponse.Response || serviceResponse.Orders == null)
+        {
+            ModelState.AddModelError("CustomError", serviceResponse.Description);
+            return BadRequest(ModelState);
+        }
+
+        var orders = serviceResponse.Orders
+            .Select(order => OrdersMapper.OrderToDto(order))
+            .ToList();
+
+        return Ok(orders);
+    }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

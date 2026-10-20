@@ -148,6 +148,19 @@ public class OrderService : IOrderService
             return response;
         }
     }
+    
+    public OrderQueueService_Response GetQueue()
+    {
+        OrderQueueService_Response response = new OrderQueueService_Response();
+
+        List<Order> orders = _repository.GetQueue();
+
+        response.Response = true;
+        response.Description = "Order queue retrieved successfully";
+        response.Orders = orders;
+
+        return response;
+    }
 
     public OrderService_Response Update(Order_UpdateDto order_UpdateDto)
     {

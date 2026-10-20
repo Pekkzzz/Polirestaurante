@@ -43,5 +43,10 @@ public class OrderRepository : IOrderRepository
       return _db.Orders.Any(rs => rs.Id == id);
    }
 
+   public List<Order> GetQueue()
+   {
+      return _db.Orders.ToList();
+   }
+
 
 }
