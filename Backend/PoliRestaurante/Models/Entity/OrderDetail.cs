@@ -7,8 +7,9 @@ public partial class OrderDetail
 {
     public int Id { get; set; }
 
-    public required string Description { get; set; }
-    public string Observations { get; set; } = null!;
+    public string Description { get; set; } = null!;
+
+    public string? Observations { get; set; }
 
     public int ProductId { get; set; }
 

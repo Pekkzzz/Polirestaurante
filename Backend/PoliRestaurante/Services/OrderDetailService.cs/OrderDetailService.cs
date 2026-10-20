@@ -5,69 +5,42 @@ public class OrderDetailService : IOrderDetailService
     private readonly IOrderDetailRepository _repository;
 
     //Services
-    private readonly IUserService _userService;
-    private readonly IUserRoleService _userRoleService;
+    private readonly IProductService _productService;
+    private readonly IOrderService _orderService;
 
-    public OrderDetailService(IOrderDetailRepository Repository, IOrderDetailRepository orderTypeRepository, IOrderDetailStatusRepository orderStatusRepository,
-    IPaymentStatusRepository paymentStatusRepository, ITableRepository tableRepository,
-    IUserService userService, IUserRoleService userRoleService)
+    public OrderDetailService(IOrderDetailRepository Repository, 
+    IProductService productService, IOrderService orderService)
     {
         _repository = Repository;
-
-        _userService = userService;
-        _userRoleService = userRoleService;
+        _productService = productService;
+        _orderService = orderService;
     }
 
     public OrderDetailService_Response Create(OrderDetail_CreateDto order_CreateDto)
     {
         OrderDetailService_Response response = new OrderDetailService_Response();
-        User_LoginDto user_LoginDto = new User_LoginDto()
-        {
-            Username = order_CreateDto.username,
-            Password = order_CreateDto.Password
-        };
-        UserService_Response userService_Response = _userService.ComprobateUser(user_LoginDto);
-        if (!userService_Response.Response || userService_Response.user == null)
-        {
-            response = new OrderDetailService_Response()
-            {
-                Response = false,
-                Description = "Something went wrong with user comprobation",
-                OrderDetail = null
-            };
-            return response;
-        }
-        
-        UserRoleService_Response userRoleService_Response =  _userRoleService.GetByID(userService_Response.user.UserRoleId);
-        UserRole? userRole = userRoleService_Response.userRole;
-        if (!userRoleService_Response.Response || userRole == null)
-        {
-            response = new OrderDetailService_Response()
-            {
-                Response = false,
-                Description = "Something went wrong with user role comprobation",
-                OrderDetail = null
-            };
-            return response;
-        }
-        
-        if (!userRole.CanEditOrders || !userRole.IsOwner)
-        {
-            response = new OrderDetailService_Response()
-            {
-                Response = false,
-                Description = "User has not the neccesary permission level",
-                OrderDetail = null
-            };
-            return response;
-        }
-
-
         OrderDetail newOrderDetail = OrdersMapper.OrderDetailToEnity(order_CreateDto);
+
         response = ComprobateOrderDetail(newOrderDetail);
         if (!response.Response)
         {
             return response;
+        }
+
+        ProductService_Response productService_Response = _productService.GetByID(newOrderDetail.ProductId);
+        if (!productService_Response.Response)
+        {
+            response.Response = false;
+            response.Description = productService_Response.Description;
+            response.OrderDetail = null;
+        }
+
+        OrderService_Response orderService_Response = _orderService.GetByID(newOrderDetail.OrderId);
+        if (!orderService_Response.Response)
+        {
+            response.Response = false;
+            response.Description = orderService_Response.Description;
+            response.OrderDetail = null;
         }
 
         return response;
