@@ -55,6 +55,43 @@ namespace ApiEcommerce.Controllers
         return Ok(orders);
     }
 
+        
+    [HttpPatch("{id:int}/status", Name = "ChangeOrderStatus")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IActionResult ChangeStatus(
+        int id,
+        [FromBody] OrderStatus_UpdateDto statusDto)
+    {
+        if (statusDto == null)
+        {
+            return BadRequest("Status information is required");
+        }
+
+        OrderService_Response serviceResponse =
+            _service.ChangeStatus(id, statusDto);
+
+        if (!serviceResponse.Response)
+        {
+            ModelState.AddModelError(
+                "CustomError",
+                serviceResponse.Description);
+
+            return BadRequest(ModelState);
+        }
+
+        if (serviceResponse.Order == null)
+        {
+            return StatusCode(500);
+        }
+
+        var order = OrdersMapper.OrderToDto(serviceResponse.Order);
+
+        return Ok(order);
+    }
+
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

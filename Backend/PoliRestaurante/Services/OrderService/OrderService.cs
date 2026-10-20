@@ -162,6 +162,56 @@ public class OrderService : IOrderService
         return response;
     }
 
+    
+    public OrderService_Response ChangeStatus(
+        int id, OrderStatus_UpdateDto statusDto)
+    {
+        OrderService_Response response = new OrderService_Response();
+
+        Order? order = _repository.Get(id);
+
+        if (order == null)
+        {
+            response.Description = "Order not found";
+            return response;
+        }
+
+        OrderStatus? newStatus =
+            _orderStatusRepository.Get(statusDto.OrderStatusId);
+
+        OrderStatus? currentStatus =
+            _orderStatusRepository.Get(order.OrderStatusId);
+
+        if (newStatus == null || currentStatus == null)
+        {
+            response.Description = "Order status not found";
+            return response;
+        }
+
+        bool valid =
+            (currentStatus.Name == "InQueue" &&
+            newStatus.Name == "InPreparation")
+            ||
+            (currentStatus.Name == "InPreparation" &&
+            newStatus.Name == "Ready");
+
+        if (!valid)
+        {
+            response.Description = "Invalid status transition";
+            return response;
+        }
+
+        order.OrderStatusId = newStatus.Id;
+
+        response.Response = _repository.Update(order);
+        response.Description = response.Response
+            ? "Order status updated successfully"
+            : "Order status could not be updated";
+        response.Order = response.Response ? order : null;
+
+        return response;
+    }
+
     public OrderService_Response Update(Order_UpdateDto order_UpdateDto)
     {
         OrderService_Response response = new OrderService_Response();

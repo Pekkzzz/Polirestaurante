@@ -7,4 +7,5 @@ public interface IOrderService
     public OrderService_Response Update(Order_UpdateDto Order_UpdateDto);
     public OrderService_Response Delete(int id);
     public OrderService_Response GetAll();
+    public OrderService_Response ChangeStatus(int id, OrderStatus_UpdateDto statusDto);
 }
