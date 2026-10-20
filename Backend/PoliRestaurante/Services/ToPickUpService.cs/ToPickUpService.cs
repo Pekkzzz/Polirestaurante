@@ -5,7 +5,7 @@ public class ToPickUpService : IToPickUpService
     private readonly IToPickUpRepository _repository;
     private string? secretKey;
 
-    public ToPickUpService(IToPickUpRepository repository, IToPickUpService toPickUpService, IConfiguration configuration)
+    public ToPickUpService(IToPickUpRepository repository, IConfiguration configuration)
     {
         _repository = repository;
         secretKey = configuration.GetValue<string>("ApiSettings:Secret");
