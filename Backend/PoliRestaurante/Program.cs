@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Polirestaurante.Repository;
 using PoliRestaurante.Data;
+using PoliRestaurante.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,8 @@ builder.Services.AddScoped<IOrderDetailStatusRepository, OrderDetailStatusReposi
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductTypeRepository, ProductTypeRepository>();
 builder.Services.AddScoped<IProductTypeRepository, ProductTypeRepository>();
+builder.Services.AddScoped<IToPickUpRepository, ToPickUpRepository>();
+builder.Services.AddScoped<IPickUpStatusRepository, PickUpStatusRepository>();
 
 
 
@@ -38,6 +41,8 @@ builder.Services.AddScoped<IOrderTypeService, OrderTypeService>();
 builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
+builder.Services.AddScoped<IToPickUpService, ToPickUpService>();
+builder.Services.AddScoped<IPickUpStatusService, PickUpStatusService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
