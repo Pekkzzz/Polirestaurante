@@ -59,30 +59,25 @@ namespace ApiEcommerce.Controllers
       return Ok(order);
     }
 
-    [HttpGet(Name = "GetAll")]
+    [HttpGet]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult GetAll()
     {
       ProductService_Response serviceResponse = _service.GetAll();
-      if (!serviceResponse.Response)
-      {
-        ModelState.AddModelError("CustomError", serviceResponse.Description);
-        return BadRequest(ModelState);
-      }
-      if (serviceResponse.products == null)
-      {
-        return StatusCode(500);
-      }
-      
-      List<Product_Dto> product_Dtos = new List<Product_Dto>();
-      foreach (Product product in serviceResponse.products)
-      {
-        Product_Dto product_Dto = ProductsMapper.ProductToDto(product);
-        product_Dtos.Add(product_Dto);
-      }
-      return Ok(product_Dtos);
+
+        if (!serviceResponse.Response || serviceResponse.products == null)
+        {
+            ModelState.AddModelError("CustomError", serviceResponse.Description);
+            return BadRequest(ModelState);
+        }
+
+        var objects = serviceResponse.products
+            .Select(objectToConvert => ProductsMapper.ProductToDto(objectToConvert))
+            .ToList();
+
+        return Ok(objects);
     }
 
     [HttpPost]

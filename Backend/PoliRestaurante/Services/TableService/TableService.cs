@@ -88,6 +88,19 @@ public class TableService : ITableService
         }
     }
 
+    public TableService_Response GetAll()
+    {
+        TableService_Response response = new TableService_Response();
+
+        List<Table> AllObjects = _repository.GetAll();
+
+        response.Response = true;
+        response.Description = "Tables retrieved successfully";
+        response.Tables = AllObjects;
+
+        return response;
+    }
+
     public TableService_Response Update(Table_UpdateDto order_UpdateDto)
     {
         TableService_Response TableService_Response = new TableService_Response();
@@ -152,6 +165,6 @@ public class TableService : ITableService
     private TableService_Response ComprobateTable(Table newTable)
     {
         
-        return new TableService_Response(true, "User Role is available", null);
+        return new TableService_Response(true, "User Role is available", null, null);
     }
 }

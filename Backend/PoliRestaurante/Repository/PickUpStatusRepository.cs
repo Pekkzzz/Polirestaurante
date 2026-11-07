@@ -42,4 +42,9 @@ public class PickUpStatusRepository : IPickUpStatusRepository
     {
         return _db.PickUpStatuses.Any(t => t.Id == id);
     }
+
+    public List<PickupStatus>? GetAll()
+    {
+        return _db.PickupStatuses.ToList();
+    }
 }

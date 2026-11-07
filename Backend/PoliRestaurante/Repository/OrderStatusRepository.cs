@@ -52,6 +52,10 @@ public class OrderStatusRepository : IOrderStatusRepository
     {
         return _db.OrderStatuses.Any(rs => rs.Name == name);
     }
+   public List<OrderStatus> GetAll()
+   {
+      return _db.OrderStatuses.ToList();
+   }
 
 
 }

@@ -53,5 +53,10 @@ public class PaymentStatusRepository : IPaymentStatusRepository
         return _db.PaymentStatuses.Any(rs => rs.Name == name);
     }
 
+   public List<PaymentStatus> GetAll()
+   {
+      return _db.PaymentStatuses.ToList();
+   }
+
 
 }

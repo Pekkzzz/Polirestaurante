@@ -50,5 +50,10 @@ public class ReservationStatusRepository : IReservationStatusRepository
         return _db.ReservationStatuses.Any(rs => rs.Name == name);
     }
 
+    public List<ReservationStatus> GetAll()
+   {
+      return _db.ReservationStatuses.ToList();
+   }
+
 
 }

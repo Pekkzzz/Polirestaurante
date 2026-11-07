@@ -111,6 +111,19 @@ public class UserService : IUserService
         }
     }
 
+    public UserService_Response GetAll()
+    {
+        UserService_Response response = new UserService_Response();
+
+        List<User> AllObjects = _repository.GetAll();
+
+        response.Response = true;
+        response.Description = "User retrieved successfully";
+        response.users = AllObjects;
+
+        return response;
+    }
+
     public UserService_Response Save()
     {
         throw new NotImplementedException();
@@ -395,21 +408,21 @@ public class UserService : IUserService
     {
         if (!UtilityInternalTools.UsernameValidityCheck(newUser.Username))
         {
-            return new UserService_Response(false, "Username is empty or invalid", null);
+            return new UserService_Response(false, "Username is empty or invalid", null, null);
         }
         if (!UtilityInternalTools.NameValidityCheck(newUser.Name))
         {
-            return new UserService_Response(false, "Name is empty or is not a valid name", null);
+            return new UserService_Response(false, "Name is empty or is not a valid name", null, null);
         }
         if (!UtilityInternalTools.EmailValidityCheck(newUser.Email))
         {
-            return new UserService_Response(false, "Email is empty or is not a valid email", null);
+            return new UserService_Response(false, "Email is empty or is not a valid email", null, null);
         }
         if (string.IsNullOrEmpty(newUser.PasswordHash))
         {
-            return new UserService_Response(false, "Password is empty or is not a valid password", null);
+            return new UserService_Response(false, "Password is empty or is not a valid password", null, null);
         }
 
-        return new UserService_Response(true, "User is available", null);
+        return new UserService_Response(true, "User is available", null, null);
     }
 }

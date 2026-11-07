@@ -5,6 +5,7 @@ public interface IUserRoleRepository
   bool CreateUserRole(UserRole userRole);
   UserRole? GetUserRole(int id);
   UserRole? GetUserRole(string name);
+  List<UserRole>? GetAll();
   bool UserRoleExists(int id);
   bool UserRoleExists(string name);
   bool UpdateUserRole(UserRole userRole);

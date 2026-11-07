@@ -53,5 +53,10 @@ public class ProductTypeRepository : IProductTypeRepository
         return _db.ProductTypes.Any(rs => rs.Id == id);
     }
 
+   public List<ProductType> GetAll()
+   {
+      return _db.ProductTypes.ToList();
+   }
+
 
 }

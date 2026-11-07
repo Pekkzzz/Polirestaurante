@@ -53,5 +53,10 @@ public class ProductRepository : IProductRepository
         return _db.Products.Any(rs => rs.Id == id);
     }
 
+   public List<Product> GetAll()
+   {
+      return _db.Products.ToList();
+   }
+
 
 }

@@ -53,5 +53,10 @@ public class OrderDetailRepository : IOrderDetailRepository
       return _db.OrderDetails.Any(od => od.Id == id);
    }
 
+   public List<OrderDetail> GetAll()
+   {
+      return _db.OrderDetails.ToList();
+   }
+
 
 }

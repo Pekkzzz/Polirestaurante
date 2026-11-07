@@ -35,6 +35,27 @@ namespace ApiEcommerce.Controllers
       return Ok(Table);
     }
 
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IActionResult GetAll()
+    {
+      TableService_Response serviceResponse = _service.GetAll();
+
+        if (!serviceResponse.Response || serviceResponse.Tables == null)
+        {
+            ModelState.AddModelError("CustomError", serviceResponse.Description);
+            return BadRequest(ModelState);
+        }
+
+        var objects = serviceResponse.Tables
+            .Select(objectToConvert => TablesMapper.TableToDto(objectToConvert))
+            .ToList();
+
+        return Ok(objects);
+    }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

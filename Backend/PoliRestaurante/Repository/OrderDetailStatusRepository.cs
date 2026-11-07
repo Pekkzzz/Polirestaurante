@@ -48,5 +48,10 @@ public class OrderDetailStatusRepository : IOrderDetailStatusRepository
       return _db.OrderDetailStatuses.Any(rs => rs.Id == id);
    }
 
+   public List<OrderDetailStatus> GetAll()
+   {
+      return _db.OrderDetailStatuses.ToList();
+   }
+
 
 }

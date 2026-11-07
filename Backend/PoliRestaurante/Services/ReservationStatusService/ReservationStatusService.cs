@@ -71,6 +71,19 @@ public class ReservationStatusService : IReservationStatusService
         }
     }
 
+    public ReservationStatusService_Response GetAll()
+    {
+        ReservationStatusService_Response response = new ReservationStatusService_Response();
+
+        List<ReservationStatus> AllObjects = _repository.GetAll();
+
+        response.Response = true;
+        response.Description = "ReservationStatus retrieved successfully";
+        response.reservationStatuses = AllObjects;
+
+        return response;
+    }
+
     public ReservationStatusService_Response Update(ReservationStatus_UpdateDto reservationStatus_UpdateDto)
     {
         ReservationStatusService_Response response = new ReservationStatusService_Response();
@@ -135,8 +148,8 @@ public class ReservationStatusService : IReservationStatusService
     {
         if (!UtilityInternalTools.NameValidityCheck(newReservationStatus.Name))
         {
-            return new ReservationStatusService_Response(false, "User Role name is null or invalid", null);
+            return new ReservationStatusService_Response(false, "User Role name is null or invalid", null, null);
         }
-        return new ReservationStatusService_Response(true, "User Role is available", null);
+        return new ReservationStatusService_Response(true, "User Role is available", null, null);
     }
 }

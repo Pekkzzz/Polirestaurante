@@ -45,5 +45,10 @@ public class ToPickUpRepository : IToPickUpRepository
         return _db.ToPickUps.Any(t => t.Id == id);
     }
 
+    public List<ToPickUp> GetAll()
+   {
+      return _db.ToPickUps.ToList();
+   }
+
 
 }

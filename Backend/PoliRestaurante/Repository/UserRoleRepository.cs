@@ -53,4 +53,9 @@ public class UserRoleRepository : IUserRoleRepository
         return _db.UserRoles.Any(ur =>
             ur.Name.Trim().ToLower() == name.Trim().ToLower());
     }
+
+    public List<UserRole> GetAll()
+   {
+      return _db.UserRoles.ToList();
+   }
 }

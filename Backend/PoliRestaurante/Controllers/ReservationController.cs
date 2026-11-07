@@ -38,25 +38,26 @@ namespace ApiEcommerce.Controllers
             return Ok(reservation);
         }
 
-        [HttpGet]
-        public IActionResult GetAll()
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IActionResult GetAll()
+    {
+      ReservationService_Response serviceResponse = _service.GetAll();
+
+        if (!serviceResponse.Response || serviceResponse.Reservations == null)
         {
-            var response = _service.GetAll();
-
-            if (!response.Response)
-            {
-                ModelState.AddModelError(
-                    "CustomError", response.Description);
-
-                return BadRequest(ModelState);
-            }
-
-            var reservations = response.Reservations
-                .Select(ReservationsMapper.ReservationToDto)
-                .ToList();
-
-            return Ok(reservations);
+            ModelState.AddModelError("CustomError", serviceResponse.Description);
+            return BadRequest(ModelState);
         }
+
+        var objects = serviceResponse.Reservations
+            .Select(objectToConvert => ReservationsMapper.ReservationToDto(objectToConvert))
+            .ToList();
+
+        return Ok(objects);
+    }
 
         [HttpPost]
         public IActionResult Create(

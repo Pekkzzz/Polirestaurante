@@ -53,5 +53,10 @@ public class TableRepository : ITableRepository
          return _db.Tables.Any(t => t.TableNum == tableNum);
     }
 
+    public List<Table> GetAll()
+   {
+      return _db.Tables.ToList();
+   }
+
    
 }

@@ -64,6 +64,19 @@ public class PickUpStatusService: IPickUpStatusService
         return response;
     }
 
+    public PickUpStatusService_Response GetAll()
+    {
+        PickUpStatusService_Response response = new PickUpStatusService_Response();
+
+        List<PickupStatus> pickUpStatuses = _repository.GetAll();
+
+        response.Response = true;
+        response.Description = "Order queue retrieved successfully";
+        response.pickupStatuses = pickUpStatuses;
+
+        return response;
+    }
+
     public PickUpStatusService_Response Update(PickUpStatus_UpdateDto pickUpStatus_UpdateDto)
     {
         PickUpStatusService_Response response = new PickUpStatusService_Response();

@@ -99,6 +99,19 @@ public class UserRoleService : IUserRoleService
         }
     }
 
+    public UserRoleService_Response GetAll()
+    {
+        UserRoleService_Response response = new UserRoleService_Response();
+
+        List<UserRole> AllObjects = _repository.GetAll();
+
+        response.Response = true;
+        response.Description = "UserRoles retrieved successfully";
+        response.userRoles = AllObjects;
+
+        return response;
+    }
+
     public UserRoleService_Response Update(UserRole_UpdateDto userRole_UpdateDto)
     {
         UserRoleService_Response response = new UserRoleService_Response();
@@ -158,8 +171,8 @@ public class UserRoleService : IUserRoleService
     {
         if (!UtilityInternalTools.NameValidityCheck(newUserRole.Name))
         {
-            return new UserRoleService_Response(false, "User Role name is null or invalid", null);
+            return new UserRoleService_Response(false, "User Role name is null or invalid", null, null);
         }
-        return new UserRoleService_Response(true, "User Role is available", null);
+        return new UserRoleService_Response(true, "User Role is available", null, null);
     }
 }

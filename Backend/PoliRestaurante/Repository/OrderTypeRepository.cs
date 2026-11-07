@@ -52,6 +52,11 @@ public class OrderTypeRepository : IOrderTypeRepository
     {
         return _db.OrderTypes.Any(rs => rs.Name == name);
     }
+   
+   public List<OrderType> GetAll()
+   {
+      return _db.OrderTypes.ToList();
+   }
 
 
 }

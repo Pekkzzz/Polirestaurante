@@ -65,4 +65,9 @@ public class UserRepository : IUserRepository
             u.Username.Trim().ToLower() == username.Trim().ToLower());
     }
 
+    public List<User> GetAll()
+   {
+      return _db.Users.ToList();
+   }
+
 }

@@ -64,6 +64,20 @@ public class ToPickUpService : IToPickUpService
         return response;
     }
 
+    public ToPickUpService_Response GetAll()
+    {
+        ToPickUpService_Response response = new ToPickUpService_Response();
+
+        List<ToPickUp> AllObjects = _repository.GetAll();
+
+        response.Response = true;
+        response.Description = "Tables retrieved successfully";
+        response.toPickUps = AllObjects;
+
+        return response;
+    }
+
+
 
     public ToPickUpService_Response Update(ToPickUp_UpdateDto toPickUp_UpdateDto)
     {

@@ -49,4 +49,9 @@ public class ReservationRepository : IReservationRepository
     {
         return _db.Reservations.Any(r => r.Id == id);
     }
+
+    public List<Reservation> GetAll()
+   {
+      return _db.Reservations.ToList();
+   }
 }

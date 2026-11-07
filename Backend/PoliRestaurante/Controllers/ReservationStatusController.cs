@@ -37,6 +37,27 @@ namespace ApiEcommerce.Controllers
       return Ok(user);
     }
 
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IActionResult GetAll()
+    {
+      ReservationStatusService_Response serviceResponse = _service.GetAll();
+
+        if (!serviceResponse.Response || serviceResponse.reservationStatuses == null)
+        {
+            ModelState.AddModelError("CustomError", serviceResponse.Description);
+            return BadRequest(ModelState);
+        }
+
+        var objects = serviceResponse.reservationStatuses
+            .Select(objectToConvert => ReservationsMapper.ReservationStatusToDto(objectToConvert))
+            .ToList();
+
+        return Ok(objects);
+    }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

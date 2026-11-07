@@ -30,6 +30,27 @@ namespace ApiEcommerce.Controllers
         }
         return Ok(userRoleService_Response.userRole);
     }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IActionResult GetAll()
+    {
+      UserRoleService_Response serviceResponse = _service.GetAll();
+
+        if (!serviceResponse.Response || serviceResponse.userRoles == null)
+        {
+            ModelState.AddModelError("CustomError", serviceResponse.Description);
+            return BadRequest(ModelState);
+        }
+
+        var objects = serviceResponse.userRoles
+            .Select(objectToConvert => UsersMapper.UserRoleToDto(objectToConvert))
+            .ToList();
+
+        return Ok(objects);
+    }
     
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]

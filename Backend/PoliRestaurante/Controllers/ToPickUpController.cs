@@ -50,6 +50,27 @@ namespace ApiEcommerce.Controllers
             return Ok(toPickUp);
     }
 
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IActionResult GetAll()
+    {
+      ToPickUpService_Response serviceResponse = _service.GetAll();
+
+        if (!serviceResponse.Response || serviceResponse.toPickUps == null)
+        {
+            ModelState.AddModelError("CustomError", serviceResponse.Description);
+            return BadRequest(ModelState);
+        }
+
+        var objects = serviceResponse.toPickUps
+            .Select(objectToConvert => PickUpMapper.ToPickupStatusToDto(objectToConvert))
+            .ToList();
+
+        return Ok(objects);
+    }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

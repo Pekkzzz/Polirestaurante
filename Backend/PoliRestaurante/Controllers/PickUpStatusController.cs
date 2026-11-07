@@ -42,6 +42,26 @@ namespace ApiEcommerce.Controllers
             };
             return Ok(pickUpStatus);
     }
+
+    [HttpGet()]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IActionResult GetAll()
+    {
+        PickUpStatusService_Response serviceResponse = _service.GetAll();
+
+        if (!serviceResponse.Response || serviceResponse.pickupStatuses == null)
+        {
+            ModelState.AddModelError("CustomError", serviceResponse.Description);
+            return BadRequest(ModelState);
+        }
+
+        var pickupStatuses = serviceResponse.pickupStatuses
+            .Select(pickupStatus => PickUpMapper.PickupStatusToDto(pickupStatus))
+            .ToList();
+
+        return Ok(pickupStatuses);
+    }
     
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
