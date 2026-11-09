@@ -46,3 +46,21 @@ Los DTOs se han usado como contrato de entrada. Por ejemplo `Product_CreateDto` 
 
 ## Seguridad
 Este es un frontend de desarrollo. No se debe exponer públicamente sin autenticación y autorización adecuadas. El token de login se guarda en sessionStorage como demostración; el backend compartido no aplica automáticamente ese token a cada petición en esta versión.
+
+
+## Actualización de GetAll (9 de noviembre de 2026)
+
+Esta versión marca explícitamente `list: true` para los diez módulos. El frontend consulta el GET de colección directamente sobre la ruta base configurada. En particular:
+
+- Usuarios: `GET /api/Users`
+- Roles: `GET /api/UserRole`
+- Mesas: `GET /api/Table`
+- Recogidas: `GET /api/ToPickUp`
+- Pedidos: `GET /api/Order`
+- Reservas: `GET /api/Reservation`
+- Estados de reserva: `GET /api/ReservationStatus`
+- Estados de recogida: `GET /api/PickUpStatus`
+- Productos: `GET /api/Product`
+- Tipos de producto: `GET /api/Product/ProductType`
+
+Se eliminó la condición que trataba Usuarios y Roles como módulos sin listado. Si el navegador conserva archivos antiguos, recarga con `Ctrl + Shift + R` o vuelve a abrir esta carpeta extraída.

@@ -33,10 +33,11 @@ async function loadDashboard(){
  $("#dashboardStats").innerHTML=`<div class="stat"><div class="stat-icon"><i class="bi bi-box-seam"></i></div><div><span>Módulos disponibles</span><b>10</b></div></div><div class="stat"><div class="stat-icon"><i class="bi bi-diagram-3"></i></div><div><span>API</span><b>ASP.NET</b></div></div><div class="stat"><div class="stat-icon"><i class="bi bi-database-check"></i></div><div><span>Base de datos</span><b>SQL Server</b></div></div><div class="stat"><div class="stat-icon"><i class="bi bi-code-slash"></i></div><div><span>Arquitectura</span><b>MVC</b></div></div>`;
 }
 function setupModule(){
- const r=RESOURCES[current];$("#moduleTitle").textContent=r.label;$("#moduleDescription").textContent=r.list===null?"Este Controller no expone un GET general. Puedes consultar registros por ID y realizar las operaciones disponibles.":"Consulta, crea, edita y elimina registros.";
+ const staleLookup=$("#lookupBox");if(staleLookup)staleLookup.remove();
+ const r=RESOURCES[current];$("#moduleTitle").textContent=r.label;$("#moduleDescription").textContent=r.list===false?"Este Controller no expone un GET general. Puedes consultar registros por ID y realizar las operaciones disponibles.":"Consulta, crea, edita y elimina registros.";
  $("#createBtn").textContent="Nuevo "+r.singular;$("#createBtn").onclick=()=>openForm();$("#reloadBtn").onclick=loadRecords;$("#search").value="";$("#search").oninput=e=>{searchTerm=e.target.value.toLowerCase();render()};
  $("#tableHead").innerHTML=`<tr><th>REGISTRO</th><th>DETALLES</th><th class="text-end">ACCIONES</th></tr>`;
- if(r.list===null){$("#footNote").textContent="Consulta por ID disponible mediante el botón de búsqueda.";$("#tableBody").innerHTML=`<tr><td colspan="3" class="empty">Este controlador no tiene endpoint GET de listado.</td></tr>`;renderLookup();return}
+ if(r.list===false){$("#footNote").textContent="Consulta por ID disponible mediante el botón de búsqueda.";$("#tableBody").innerHTML=`<tr><td colspan="3" class="empty">Este controlador no tiene endpoint GET de listado.</td></tr>`;renderLookup();return}
  loadRecords();
 }
 function renderLookup(){
@@ -47,8 +48,8 @@ function renderLookup(){
  $("#lookupBtn").onclick=async()=>{let id=$("#lookupId").value;if(!id)return alertMsg("Escribe un ID válido.","warning");try{let item=await api(RESOURCES[current].base+"/"+id);records=[item];render()}catch(e){alertMsg(e.message)}};
 }
 async function loadRecords(){
- const r=RESOURCES[current];if(r.list===null)return;
- try{records=await api(r.base+(r.list||""));if(!Array.isArray(records))throw new Error("El endpoint no devolvió una lista.");render();$("#footNote").textContent=`${records.length} registro(s) cargados desde ${r.base}`;}
+ const r=RESOURCES[current];if(r.list===false)return;
+ try{records=await api(r.base+(r.listPath||""));if(!Array.isArray(records))throw new Error("El endpoint no devolvió una lista.");render();$("#footNote").textContent=`${records.length} registro(s) cargados desde ${r.base}`;}
  catch(e){records=[];render();alertMsg(e.message)}
 }
 function render(){
@@ -85,7 +86,7 @@ $("#recordForm").addEventListener("submit",async e=>{
   const method=isEdit?(current==="users"?"PUT":"PATCH"):"POST";
   await api(r.base+(isEdit?"":r.create||""),{method,body:JSON.stringify(payload)});
   modal.hide();alertMsg(`${r.singular} ${isEdit?"actualizado":"creado"} correctamente.`,"success");
-  if(r.list!==null)await loadRecords();else $("#tableBody").innerHTML='<tr><td colspan="3" class="empty">Operación completada. Consulta por ID para verificar.</td></tr>';
+  if(r.list!==false)await loadRecords();else $("#tableBody").innerHTML='<tr><td colspan="3" class="empty">Operación completada. Consulta por ID para verificar.</td></tr>';
  }catch(err){$("#formError").textContent=err.message;$("#formError").classList.remove("d-none")}
 });
 $("#loginForm").addEventListener("submit",async e=>{e.preventDefault();let f=new FormData(e.currentTarget);try{let token=await api(ROUTES.login,{method:"POST",body:JSON.stringify({username:f.get("username"),password:f.get("password")})});sessionStorage.setItem("poliToken",typeof token==="string"?token:JSON.stringify(token));bootstrap.Modal.getInstance($("#loginModal")).hide();alertMsg("Inicio de sesión correcto.","success")}catch(err){alertMsg(err.message)}});
